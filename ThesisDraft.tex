@@ -1,0 +1,89 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% created on 2024-03-03
+% @author : elenavernazza
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper,11pt]{report}
+\usepackage[utf8]{inputenc}
+\pdfoutput=1
+\usepackage{geometry}
+\geometry{left=16mm,top=30mm,right=16mm,bottom=30mm} 
+% \renewcommand{\familydefault}{\sfdefault} % change font
+\usepackage{xcolor}
+\definecolor{bordeau}{rgb}{0.3515625,0,0.234375}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{graphicx}
+\usepackage{lipsum}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{afterpage}
+\usepackage{setspace}
+\usepackage{pgffor}
+\setlength{\columnseprule}{0pt}
+\setlength\columnsep{10pt}
+
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Bibliography style
+\usepackage[square, numbers]{natbib}
+\bibliographystyle{abbrvnat}
+
+% Thesis title
+\newcommand{\PhDTitle}{Thesis title. It can extend over several lines (even 4 or 5)} 
+
+% Name
+\newcommand{\PhDname}{FirstName LastName} 
+
+% Change this variable if you add or remove chapters
+\newcommand*{\NumOfChapters}{5}
+
+% Change this variable if you add or remove appendices
+\newcommand*{\NumOfAppendices}{2}
+
+% PDF metadata
+\hypersetup{
+	pdfauthor={\PhDname},
+	pdfsubject={Manuscrit de thèse de doctorat},
+	pdftitle={\PhDTitle}
+}
+
+% \usepackage{amsmath,amsfonts,amssymb,amsbsy,mathrsfs,units,pifont,slashed,bbm,bbding,textcomp,array}
+% % \geometry{top=4cm,bottom=4cm,left=3.5cm,right=3.5cm}
+% %\usepackage[textfont=sl]{caption}
+% \usepackage{array,booktabs,multirow,colortbl,hhline}
+% \usepackage{tabu}
+% \usepackage[thicklines]{cancel}
+% \usepackage{graphicx,feynmp,feynmp}
+% \usepackage{pstricks,epsf,tikz,pst-plot} 
+% \let\checkmark\relax %evita conflitti tra dingbat e amsmath
+% \usepackage{dingbat}
+% \let\Asterisk\relax %evita conflitti tra mathbax e amsmath
+% \usepackage{mathabx}
+% \usepackage{hyperref}
+% \usepackage{setspace}
+% \usepackage{pifont}
+% \usepackage[hang,nooneline]{subfigure}
+% \usepackage[hang,nooneline]{subfigure}
+% \usepackage[toc,page]{appendix}
+% \usepackage{dblfloatfix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+	\doublespacing
+	% \input{layout/firstpage.tex}
+	\input{3.tex}
+	% \section{Introduction}
+\end{document}
