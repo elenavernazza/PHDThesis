@@ -64,13 +64,39 @@ A schematic overview of the CMS Phase-2 upgrade is depicted in Figure \ref{fig:C
 
 Among the CMS detector updates, one of the most ambitious projects is the High Granularity Calorimeter (HGCAL), a high-granularity sampling calorimeter designed to replace the existing CMS endcap calorimeter in order to to maintain a excellent physics performance under the high pile~up and harsh radiation environment of HL-LHC.
 
-The existing forward calorimeters, the $\textnormal{PbWO}_4$-based electromagnetic calorimeter (EE) and the plastic scintillator based hadron calorimeter (HE), were initially designed to withstand a total integrated luminosity of 500 $\textnormal{fb}^{-1}$. 
-The performance degradation much beyond this integrated luminosity leads to an unacceptable loss of physics performance.
-The High Granularity Calorimeter (HGCAL) is probably one of the most abitious projects.\cite{TDR} will replace the existing CMS endcap calorimeter to maintain a excellent physics performance under the high pile~up and harsh radiation environment of HL-LHC.
-The HGCAL detector will consist of hexagonal silicon-based modules for the electromagnetic and part of the hadronic section, and of plastic scintillator tiles with SiPM read-out for the remaining low-radiation hadronic section.
-With this ambitious project, the CMS forward calorimetry will be provided with an extremely fine transverse and longitudinal granularity, including a total of 6~million channels.
-Besides the unprecedented readout segmentation, the performance requirements for the front-end electronics are extremely stringent: dynamic range over 16 bits equivalent ($0–10\,\textrm{pC}$), noise below 2500~electrons, high-precision timing information ($25\,\textrm{ps}$) in order to mitigate the pileup effect, low power consumption ($\sim$$15\,\textrm{mW/channel}$), and low temperature operation ($240\,\textrm{K}$).
+The existing $\textnormal{PbWO}_4$-based Endcap Calorimeters (CE) of the CMS detector were designed to sustain a total integrated luminosity of 500 $\textnormal{fb}^{-1}$. 
+The transparency of the lead-tungstate crystals, already degraded during Run-II operations, would not survive the unprecedented radiation flux typical for the HL-LHC environment in this detector region.
+It is therefore necessary to replace the current calorimeter endcaps with a new detector with high radiation tolerance, highly granular energy deposit and good time resolution to adequately treat pile~up in the offline event reconstruction. \newline
+
+The HGCAL will consist of 47 layers divided into two compartments:
+\begin{itemize}
+    \item [-] the Electromagnetic  Compartment (CE-E), featuring 26 active layers, interspersed with CuW, Cu, and Pb absorbers,
+    \item [-] the Hadronic Compartment (CE-H), composed of 12 layers exploiting stainless steel as passive material.
+\end{itemize}
+The number of longitudinal samplings has been designed as a trade-off between the best shower reconstruction and the engineering requirements of the mechanical structure.
+To meet the radiation hardness requirements, the CE-E and the front part of the CE-H will employ silicon as active material, for a total area of about 600~$\textnormal{m}^2$ to be covered. In the remaining lower radiation regions of CE-H, at about 4~m from the interaction point, segmented plastic scintillators with silicon photomultipliers (SiPM) for the read- out will be used as the active material. Squared scintillator tiles with sizes ranging from 4~$\textnormal{cm}^2$ up to 30~$\textnormal{cm}^2$ will be installed, for a total of about 40~$\textnormal{m}^2$ of active area covered in scintillators.
+
+This configuration amounts to a total of 10 nuclear radiation lengths ($\lambda_n$), divided into 1.3~$\lambda_n$ for the CE-E and 8.5~$\lambda_n$ for the CE-H. The CE-E alone will extend for a total of 27.7 radiation-lengths ($X_0$).
+To further improve radiation resistance, the full system is cooled down to 240~K ($-30^{\circ}$C) with liquid $\textnormal{CO}_2$.
+
+The choice of silicon as the main material of the HGCAL also ensures the high density of the detector, which is crucial to constrain the lateral spread of showers. To guarantee high sensitivity and outstanding PU rejection capabilities, the whole detector is laterally segmented to a significant degree. The silicon active material in the high occupancy sector is transversely segmented into hexagonal cells of surface 0.52 to 1.18 cm2 and thickness 120 to 300 μm, depending on the detector region. The scintillating material, coupled to SiPMs for readout, in the low occupancy sector is transversely segmented with square shapes and sizes of 4 to 30 cm2 depending on the pseudorapidity position. This geometrical configuration amounts to a total active area of 620 m2 and 370 m2 for the CE-E and CE-H compartments, respectively.
+This design ensures the pseudorapidity coverage 1.5 > |η| > 3.0 with a highly granular lateral and longitudinal segmentation. The enhanced lateral granularity, combined with the dense absorbers, yields effective individual shower discrimination in the detector. Moreover, the finely segmented longitudinal structure enhances PU rejection, particle identification, and energy resolution. These features of the design make the HGCAL a five-dimensional sampling calorimeter, the five dimensions corresponding to the three-dimensional position measured by the fine voxels of the detector, the energy deposit in each of the active material segments, and the timing information with an expected O(10ps) resolution. For this reason, the HGCAL is sometimes referred to as an imaging calorimeter.
+In this configuration, the HGCAL has a total of more than 6M readout channels. The quantity of information streamed through them highly exceeds the available bandwidth of the trigger system; therefore, only about 1M are dedicated to trigger purposes. This represents a significant advancement over Phase-1, amounting to more than a 500-fold increase. To contribute to the L1 trigger decision, raw data undergoes processing within the HGCAL readout electronics to construct highly granular TPs that can be used to develop advanced trigger algorithms, as elaborated in the following.
+The HGCAL geometry described above is known as geometry v16; it was finalised in 2021, and it is the one used for the development of the L1 τh trigger described in Section 4.2. A further update is already foreseen for the coming years.
+
+In order to cover this area in the most cost-effective manner, a hexagonal geometry for the silicon sensors was decided on. To reduce the number of modules, the baseline of the sensor size has been adjusted from the initially foreseen 6′′ design to 8′′. The basic sensitive units are ∼0.5-1cm2 large diodes on the silicon sensors. Each of the approximately six million diodes will be readout individually.
+Ultimately, 30,000 silicon-based modules will be made from a sandwich structure of a printed circuitboardhousingthefront-endelectronics,thesiliconsensor,gold-platedKapton⃝c asabias- ing layer and a baseplate mainly for mechanical rigidity and cooling, cf. left side of Figure 4.5. In the CE-E, the silicon modules will be used to create self-supporting sandwich structures which are commonly referred to as cassettes. For this, the modules will be installed on both sides of a copper cooling plate and will be closed with lead plates.
+
+Hexagonal silicon sensors will be used to optimize the coverage of such a large surface and reduce the detector's total cost. The design, production, and validation of these hexagonal sensors, hereafter referred to as modules, is one of the most challenging aspects of the HGCAL project. A more detailed discussion about silicon as active material and the structure of the HGCAL modules is given in Sec. 3.2.1. The HGCAL wil feature "8 sensors with an active thickness of 120, 200, or 300 um, depending on the detector region. Each
+module wil comprise several single readout diodes, hereafter referred to as cells or pads, with a 0.5 or 1.0 cm* active area, for a total of about six million cells read out individually in the ultimate detector operation. Aschematic representation of the subdivision of a silicon module into its readout units is shown in the left part of Fig: 3.2.
+
+
+
 
 With an excellent technical effort to meet all these requirements, the HGCROC3 is the final version of the ASIC specifically designed to readout the modules of the future HGCAL. 
 During my thesis project, I conducted an extensive characterization of the HGCROC3 chip, with particular emphasis in testing its performance both under normal conditions and radiation environments.
 This section contains a general overview of the architecture of the chip and its operation, a description of the main radiation effects, the testing procedures and the results from the irradiation campaigns.
+
+\subsection{Silicon Modules}
+
+\subsection{Plastic Scintillation Tiles}
