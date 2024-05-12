@@ -269,5 +269,208 @@ A Fast Command block is used to read and write the configuration parameters, to 
 \section{Characterisation and testing of the HGCROC3}
 \label{sec:Characterisation and testing of the HGCROC3}
 
-% Whe I arrived the new  HGCROC3 had just arrived and we had to test their performance in order to check whether the met the requirements
+% When I arrived the new  HGCROC3 had just arrived and we had to test their performance in order to check whether the met the requirements
 % What are the differences between HGCROC2 and 3?
+
+The characterisation of the HGCROC3 is a crucial step towards validating the chip's design, ensuring expected performance within the acceptable limits and reliability in the operations.
+This section outlines the main procedures for calibrating and testing the HGCROC3, which will be essential to comprehend its performance in preparation for the irradiation testing.
+
+% \bigbreak
+
+% There are different set-ups:
+% - HGCROC3 on the mezzanine board, on which all the power supplies remain separated and it is possible to check the performance of the circuit in an optimistic framework (possible couplings via power supplies are reduced).
+% - HGCROC3 in a mezzanine socket, where multiple chips can be tested one after the other and preliminary batch testing has been performed
+% - Mechanical socket interfaced with the robot.
+
+% A batch of ~300 chips has been tested by hand while the robot was in development in order to gain enough statistics about the chip's performance. The final goal is to be able to evaluate if a chip is good or bad.
+
+\subsection{The calibration procedure}
+\label{subsec:The calibration procedure}
+
+The HGCROC3 needs to be adaptable to a wide range of scenarios, in order to ensure consistent performance across the numerous modules and channels. The presence of potential discrepancies resulting from the chip manufacturer and the selected technology might cause fluctuations between different chips or channels belonging to the same device. As a consequence, the chip design integrates configurable parameters aimed at addressing various aspects, from the optimisation of the DC levels to the mitigation of radiation-induced damage. 
+
+A calibration procedure is essential to find the optimal parameters and constitutes the very first operation to be performed before testing the chip. It includes the optimisation of the pedestal value for each channel, the ToA and ToT thresholds setting, and the definition of the correct phase for the signal sampling. A summary of the methodologies for the chip calibration is described in the following paragraphs.
+
+\subsubsection{The pedestal calibration}
+\label{subsubsec:The pedestal calibration}
+
+\begin{figure} [b]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/HGCAL/SignalBaseline.pdf}
+    \caption{A typical signal shape recorder by the HGCROC3: the pink line shows the pedestal baseline. The picture highlights the difference between the measured amplitude (orange) and the real signal amplitude (purple).}
+    \label{fig:SignalBaseline}
+\end{figure}
+
+The initial step of the chip calibration procedure consists in the tuning of the pedestal values. The pedestal is the baseline of the signal, i.e. the ADC recorded value when no input is present. On the one hand, having a non-zero pedestal is a common practice in electronics devices in order to avoid a possible change in the signal polarisation due to electronic noise or to fluctuations of the ground potential. On the other hand, the pedestal value should be minimised, in order to fully exploit the dynamic range for the measurement of the signal amplitude.
+Figure~\ref{fig:SignalBaseline} shows a typical signal shape recorded by the HGCROC3 with a pedestal value around 100~ADC counts. Since every signal is built on top of the baseline, it is important to know the pedestal value and subtract it from the measured amplitude in order to extract the real signal amplitude.
+
+Before the calibration procedure, the 78 independent channels of the HGCROC3 present a large dispersion in their pedestal values, as shown in the left plot of Figure~\ref{fig:Pedestal}. 
+A channel-wise parameter (\texttt{Trim\_Inv}) is available in the I2C register to change the pedestal of each channel independently: the parameter is coded into 6 bits, corresponding to 64 possible values.
+The \textit{local} per-channel pedestal trimming is performed by scanning all possible values of the parameter and defining as a target the maximum, between all the pedestal values, for a \texttt{Trim\_Inv} value of 0. The \texttt{Trim\_Inv} of each channel will be set to the value giving a pedestal as close as possible to the target.
+The full scan of the pedestal trimming value is performed separately for each half of the HGCROC3 and is shown in Figure~\ref{fig:PedestalScan}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/Pedestal_0.pdf}
+    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/Pedestal_1.pdf}
+    \caption{Pedestal values of the HGCROC3 channels before (left) and after (right) the pedestal calibration procedure: channel numbers from 0 to 39 belong to the first half, channel numbers from 40 to 77 belong to the second half of the chip. The main target of the calibration is to reduce the dispersion between the channels and minimise their average.}
+    \label{fig:Pedestal}
+\end{figure}
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=0.7\linewidth]{Figures/HGCAL/PedestalScan.pdf}
+    \caption{Pedestal values of the HGCROC3 channels as a function of the \texttt{Trim\_Inv} parameter, used for a channel-wise pedestal trimming.}
+    \label{fig:PedestalScan}
+\end{figure}
+
+\bigbreak
+
+Once each half shows a similar pedestal value in all channels, a \textit{global} pedestal trimming is performed to lower down the pedestal value to approximately 10~ADC and fully exploit the 1~V digitisation range.
+The global pedestal value is configurable through two per-half parameters, \texttt{Vref\_Inv} and \texttt{Vref\_NoInv}, in such a way that the 1~V signal range is placed at the center of the 1.2~V dynamic range of the chip.
+The configuration of the pedestal value depends on the expected noise levels and ground fluctuations of testing set-up: in the batch testing experimental conditions, high fluctuations of the ground potential are expected and for this reason the pedestal value is set to a slightly higher level around 50~ADC in order to maintain a discrete margin.
+
+The final configuration of the pedestal values for the 78 channels, after the pedestal calibration procedure is show in the right plot of Figure~\ref{fig:Pedestal}. As a result, also the electronic noise of each channel is reduced after the pedestal calibration, as shown in Figure~\ref{fig:Noise}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/Noise_0.pdf}
+    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/Noise_1.pdf}
+    \caption{Noise values of the HGCROC3 channels before (left) and after (right) the pedestal calibration procedure: channel numbers from 0 to 39 belong to the first half, channel numbers from 40 to 77 belong to the second half of the chip. The pedestal calibration also aims at minimising the electronic noise of the channels.}
+    \label{fig:Noise}
+\end{figure}
+
+% Since the analog part of the HGCROC3 is powered at 1.2~V, two per-half parameters are present in the I2C register to place the signal range at the center of the dynamic range.
+% In order to better understand this procedure, it is useful to go a bit in the details of the ADC chain. Before the preamplified analog signal enters the ADC block, it is split in two signals with same shape and opposite polarisation: the positively polarised signal enters the \textit{Non Inverted} chain, while the negatively polarised signal enters the \textit{Inverted} chain. Both chains have a 1.2~V dynamic range.
+% It is possible to change the values of Vref_inv and Vref_noinv in 10b-DACs (1024 values) to find the best combination. The principle is to force one of the ADC input to 0.6 V (half of the signal range), perform a scan of the Vref DAC of the other branch and set it to the value giving the code 256 ADC (266 in fact to have some margin), and then redo the same operation but for the other branch. By construction, this procedure allows the optimization of both the pedestal and the dynamic range. 
+
+\subsubsection{The time thresholds calibration}
+\label{subsubsec:The time thresholds calibration}
+
+The Time-of-Arrival (ToA) denotes the timing measurement of the signal, determined by the moment when the signal amplitude surpasses a predefined threshold value. The ToA threshold should be calibrated slightly above the pedestal level to ensure accurate timing acquisition for the majority of the events. Moreover, the read-out chip should provide the same timing efficiency across different modules and channels, without being affected by fluctuations in the pedestal or noise values.
+
+\bigbreak
+
+In the HGCROC3, two channel-wise parameters (\texttt{ToA\_Vref} and \texttt{Trim\_ToA}) are available to calibrate the ToA thresholds in order to minimise the ToA efficiency dispersion among channels.
+For the ToA calibration, a small charge with a fixed ADC amplitude is internally injected into each channel and a scan of different discriminator thresholds is performed. For each threshold, the ToA efficiency is computed, defined as the ratio of ToA triggers to the total number of injected events: if the threshold is low, all events will trigger a ToA signal and the efficiency will be equal to 1, while if the threshold is high, no event will reach the discriminator and the efficiency will be 0.
+
+The ToA efficiency as a function of the different threshold values is presented in the left plot of Figure~\ref{fig:ToAEff} before the calibration procedure.
+The goal of the ToA threshold calibration is to have, for a given \texttt{ToA\_Vref} value, the same ToA efficiency in all channels. 
+Since the value of the discriminator threshold is defined as the difference between \texttt{ToA\_Vref} and \texttt{Trim\_ToA}, it is possible to configure the channel-wise \texttt{Trim\_ToA} so that the the 50$\%$ efficiency is reached for the same \texttt{ToA\_Vref} value for all channels: the final performance after the calibration procedure is shown in the right plot of Figure~\ref{fig:ToAEff}.
+
+\bigbreak
+
+The Time-over-Threshold (ToT) is a method to provide an estimation of the signal amplitude for very high pulses that saturate the ADC dynamic range by measuring the duration of the signal pulse saturation. 
+The ToT is computed only for pulses exceeding the ToT threshold, that needs to be configured below the preamplifier saturation point, in order not to have gaps between the ADC and the ToT dynamic range of measurements. The process of establishing the ToT threshold voltage is similar to the ToA calibration method, and is configurable through equivalent channel-wise parameters, \texttt{ToT\_Vref} and \texttt{Trim\_ToT}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/ToA_Eff_0.pdf}
+    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/ToA_Eff_1.pdf}
+    \caption{ToA efficiency, defined as the ratio between ToA triggered events and total number of injected events, as a function of the \texttt{ToA\_Vref} parameter, defining the ToA discriminator threshold, before (left) and after (right) the ToA threshold calibration procedure.}
+    \label{fig:ToAEff}
+\end{figure}
+
+% The ToA injection scan measures the time of arrival of the signal. The ToA is the instant of time at which the signal amplitude exceeds a threshold value. You can see from the example that a smaller signal amplitude provides a bigger ToA, while a higher signal amplitude leads to a smaller ToA. This is reflected in the right plot, where we can see the so-called “time walk”.
+
+\subsubsection{The phase calibration}
+\label{subsubsec:The phase calibration}
+
+In order to correctly measure the amplitude of the physical signal, the ADC and TDC conversion blocks of the HGCROC3 are provided with an adjustable sampling phase parameter.
+Each 25~ns bunch crossing (BX) period is internally sampled into 16 phases: each ASIC can be configured in such a way that the signal amplitude is sampled at the correct phase, which might depend on the rapidity angle of the module and on the silicon sensor thickness.
+
+Figure~\ref{fig:BestPhase} shows a scan over phases of the ADC value that reconstructs the signal shape of an injected pulse: in this case, the sampling phase corresponding to the signal peak is determined to be phase 0.
+The signal sampling also shows an oscillation in the pedestal value, due to the fluctuation of the ground potential, that can be subtracted through the common mode channels.
+
+\begin{figure}[b!]
+    \centering
+    \includegraphics[width=0.65\linewidth]{Figures/HGCAL/BestPhase.pdf}
+    \caption{Sampling scan of the ADC value of 4 channels for different phases. Each 25~ns bunch crossing (BX) period is divided into 16 phases: the sampling position is determined by the phase of the signal maximum.}
+    \label{fig:BestPhase}
+\end{figure}
+
+\bigbreak
+
+Other configurable parameters exist within the HGCROC3 I2C register, but are not addressed in this context as they are not relevant for the discussion.
+
+\subsection{The HGCROC3 performance}
+\label{subsec:The HGCROC3 performance}
+
+Once the HGCROC3 is correctly configured for the data acquisition, it's possible to test its performance.
+The ASIC can measure charges spanning from 160~fC to 320~pC, with two different regimes: the ADC is calibrated to accurately detect charges up to the preamplifier saturation, when the saturation is reached the Time-Over-Threshold (ToT) technique measures the signal duration during saturation. The transition from ADC to ToT is configurable through the chip parameters. The preamplifier output is also connected to the Time-Of-Arrival (ToA) discriminator to capture timing information. 
+
+Considering the different types of signal pulses to be read out by the HGCROC2, it is essential to evaluate the response of the device to different signal pulses in terms of ADC, ToA and ToT.
+
+\subsubsection{The ADC performance}
+\label{subsubsec:The ADC performance}
+
+The front-end ADC operates at 40 MHz to convert the analog signal into a digitised value corresponding to the signal amplitude and consequently to energy deposit in the detector. 
+Figure~\ref{fig:FitSampling} shows a typical signal pulse recorder by the HGCROC3 and fitted using Equation~\ref{eq:FitSampling}. The model well describes the recorded data, with minor discrepancies below 2\%.
+
+\begin{equation}
+    f(t) = A_{0}\,e^{-at}\left[e^{-ct}\left(\frac{t^3}{c}-\frac{3t^2}{c^2}+\frac{6t}{c^3}-\frac{6}{c^4}\right)+\frac{6}{c^4}\right], \;\; a =\frac{1}{\tau_{p}}, \;\; c=\frac{1}{\tau_{p}}-\frac{1}{\tau_{s}}
+\label{eq:FitSampling}
+\end{equation}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Figures/HGCAL/FitSampling.pdf}
+    \caption{Normalised signal pulse for 4 channels of the HGCROC3, two channels of the first half (left) and two channels of the second half (right). The signal shape is fitted using Equation~\ref{eq:FitSampling} and the optimised parameters of the fit are reported in the legend. Discrepancies between the model and the data are below 2\%.}
+    \label{fig:FitSampling}
+\end{figure}
+
+A high linearity is crucial for the ADC to accurately measure the signal peak and ensure precise charge measurements. The ADC performance is tested by injecting signals with increasing charge value and verifying the linearity of the recorded ADC as a function of the input charge. Figure~\ref{fig:ADC_Injection} shows the expected linear response of the signal amplitude measured by the HGCROC3 with respect to the injected charge, in units of the \texttt{Calib\_DAC} parameter - a \texttt{Calib\_DAC} value of 4096 corresponds to a charge of 500~fC. The linear function described in Equation~\ref{eq:ADCLinearity} is used to test the linearity of the response.
+
+\begin{equation}
+    f(t) = ax + b
+\label{eq:ADCLinearity}
+\end{equation}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Figures/HGCAL/ADC_Injection.pdf}
+    \caption{The ADC response linearity to multiple injections corresponding to different \texttt{Calib\_DAC} values, defining the input charge. The  response is fitted with the linear function in Equation~\ref{eq:ADCLinearity} and the optimised parameters of the fit are reported in the legend.}
+    \label{fig:ADC_Injection}
+\end{figure}
+
+\subsubsection{The ToT performance}
+\label{subsubsec:The ToT performance}
+
+When the preamplifier enters the saturation region, the signal duration becomes proportional to the injected charge. 
+The Time-over-Threshold (ToT) technique measures the time difference between the start and the end of the saturation time. Figure~\ref{fig:TOT_Injection} illustrates the ToT measurements for different injected charges. The ToT curve is fitted by using Equation~\ref{eq:ADCLinearity} and the performance shows a good linearity up to the highest charge of 500~fC. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Figures/HGCAL/TOT_Injection.pdf}
+    \caption{The ToT response linearity to multiple injections corresponding to different \texttt{Calib\_DAC} values, defining the input charge. The  response is fitted with the linear function in Equation~\ref{eq:ADCLinearity} and the optimised parameters of the fit are reported in the legend.}
+    \label{fig:TOT_Injection}
+\end{figure}
+
+\subsubsection{The ToA performance}
+\label{subsubsec:The ToA performance}
+
+The ToA measurements are crucial in discriminating pile-up events and improving particle identification in collision scenarios. Time measurements aim to achieve accurate timing alongside most of the charge information. The H2GCROCv3 ASIC allows configuring a single global phase and bunch crossing (BX) for data acquisition. Figure 5.36 presents TOA values for dif- ferent BX and phases and the corresponding ADC values for each time measurement. As observed, the time data depends on the sampling time. Ideally, the TOA measurement is more effective and linear when taken in the middle of the rising slope of the ADC signal. However, to measure charge efficiently, it is necessary to select the peak of the ADC signal. This selection significantly impacts time measurements for slower signals from large SiPM detectors. If the si- gnal starts within one BX and reaches its peak two BX later, the time walk of the measurement will exceed the limit, making it challenging to correlate with the correct charge measurement.
+
+The 40 MHz HGCAL frequency requires configuring the ASIC to produce a TOA time walk below 25 ns. Detectors with lower capacitance exhibit shorter time walk times, while those with higher capacitance approach the 25 ns limit due to their slower signal generation. Figure 5.36 depicts the system’s time walk and associated jitter without any capacitor or detector connected at the input. The time walk generated is approximately 16 ns, producing a jitter below 100 ps for charge values of around 20 pC or higher. The fit of the time walk follows Equation 5.4.3, and the fit of the jitter follows Equation 58.
+When the signal duration is extended, the optimal phase for charge measurement may result in poorer jitter performance. The capability to set different measurement phases for TDCs and ADCs will address BX information discrepancies in future ASIC versions. Finally, Figure 5.37 presents the TOA performance with the correct phase for time measurements, demonstrating the performance variations for different detector capacitances corresponding to SiPM sizes in HGCAL.
+Furthermore, the increase in noise caused by larger detector capacitances impacts the minimum threshold value available for configuration and significantly affects the resolution of small charge injections. Figure 5.38 illustrates the TOA efficiency for a charge injection scan using different detector capacitances. The minimal charge that achieves TOA data with an efficiency of one varies for each SiPM size (see Figure 5.39). The three SiPM sizes allow for TOA data measurements from minimal charges of approximately 220 fC, 270 fC, and 380 fC, respectively. The system achieves a resolution of less than 100 ps, reaching a floor of 25 ps with all detectors. Nevertheless, increasing the detector capacitance affects the jitter for small charge injection and delays achieving 100 ps and 25 ps resolutions.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Figures/HGCAL/TOA_Injection.pdf}
+    \caption{}
+    \label{fig:TOA_Injection}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Figures/HGCAL/ToANoise_Injection.pdf}
+    \caption{}
+    \label{fig:TOANoise_Injection}
+\end{figure}
+
+% The injection scan is the last test and provides the recorded ADC, ToA and ToT for different amplitudes of the injected signal. The ADC injection scan measures the ADC value of the signal peak. We can change the amplitude of the injected signal through the CalibDAC parameter inside the configuration. I put a graphic example on the left plot with three different signals and the three measured ADC. Of course what we expect is a linear dependence between the CalibDAC parameter and the recorded ADC.
+
+% The ToA injection scan measures the time of arrival of the signal. The ToA is the instant of time at which the signal amplitude exceeds a threshold value. You can see from the exemple that a smaller signal amplitude provides a bigger ToA, while a higher signal amplitude leads to a smaller ToA. This is reflected in the right plot, where we can see the so-called “time walk”.
+
+
