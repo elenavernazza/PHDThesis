@@ -29,7 +29,7 @@ In order to maintain its excellent physics performance in the high pile-up envir
 \bigbreak
 
 In this chapter, after a brief overview of the CMS upgrade plans in Sec.~\ref{sec:Upgrades of the CMS detector}, the focus will be directed towards the High Granularity Calorimeter (HGCAL), that will replace the current endcap calorimeters and completely renovate the CMS forward calorimetry strategy. The HGCAL detector, described in Sec.\ref{sec:The High-Granularity Calorimeter design} will provide the very first large-scale silicon-based imaging calorimeter employed in a high-energy physics experiment, with extremely fine transverse and longitudinal granularity, including a total of 6 million channels. Besides the unprecedented read-out segmentation, the performance requirements for the front-end electronics will be extremely stringent thus calling for ad-hoc electronics development. With an excellent technical effort to meet all these requirements, the HGCROC3 is the final version of the ASIC specifically designed to read-out the modules of the future HGCAL. 
-The characteristics of the HGCROC will be described in Sec.~\ref{sec:The HGCAL Front-End Electronics}, while Sec.~\ref{FIXME} will present the irradiation campaigns performed on the chip to test its radiation hardness. 
+The characteristics of the HGCROC will be described in Sec.~\ref{sec:The HGCAL Front-End Electronics}, while Sec.~\ref{sec:The HGCROC3 irradiation testing} will present the irradiation campaigns performed on the chip to test its radiation hardness. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -42,7 +42,7 @@ The characteristics of the HGCROC will be described in Sec.~\ref{sec:The HGCAL F
 In the context of the future HL-LHC phase (Phase-2), the CMS detector upgrades programme has the main objective of maintaining the current physics performance under a new unprecedentedly complex environment. 
 After years of operations, many current detector components have become inadequate to withstand high luminosity conditions and will either go through a complete replacement or a significant upgrade of already existing modules. There are three main points the CMS Collaboration has to consider to ensure that the detector's capabilities align with the ambitious research goals of the HL-LHC era:
 \begin{itemize}
-    \item [-] The unprecedented radiation doses will necessitate a complete replacement of the tracker and endcap calorimeter systems, the adoption of new technologies for the electromagnetic barrel (EB), and substantial enhancements to the electronics systems in the barrel calorimeters and muon detectors.
+    \item [-] The unprecedented radiation doses will necessitate a complete replacement of the tracker and endcap calorimeter systems, the adoption of new technologies for the electromagnetic barrel (EB), and substantial enhancements to the electronic systems in the barrel calorimeters and muon detectors.
     \item [-] The increase in the pile-up rate will require highly granular read-outs wherever possible, the implementation of precision timing detectors, and innovative approaches to pile-up mitigation.
     \item [-] The high luminosity will result in an increased data stream, highlighting the crucial need for substantial improvements to the L1 Trigger primitives and the overall Trigger and Data Acquisition System (TriDAS).
 \end{itemize}
@@ -198,7 +198,7 @@ The FE electronics is responsible for several critical functions within the HGCA
 Besides the unprecedented readout segmentation, the performance requirements for the FE electronics are extremely stringent, particularly for the silicon part of the detector:
 \begin{itemize}
     \item [-] Low noise and large dynamic range, spanning from approximately 0.2~fC to 10~pC, equivalent to 16 bits. This range enables the detection of MIPs in the silicon sensors and the recording of high-energy deposits from electromagnetic showers. 
-    The electronics noise must be below 2000 electrons for a 65~pF capacitance pad to allow MIP visibility during the whole operation.
+    The electronic noise must be below 2000 electrons for a 65~pF capacitance pad to allow MIP visibility during the whole operation.
     \item [-] Integral linearity must exceed 1$\%$ across the entire dynamic range.
     \item [-] Timing information with a precision better than 100~ps for pulses above 12~fC, corresponding to about 3~MIPs in the 300~$\mu$m silicon sensors.
     \item [-] Fast shaping time (peaking-time $<20$~ns) to minimize the out-of-time pileup: the pulse should be dropped to less than 20$\%$ by the next bunch crossing.
@@ -337,7 +337,7 @@ A calibration procedure is essential to find the optimal parameters and constitu
     \label{fig:SignalBaseline}
 \end{figure}
 
-The initial step of the chip calibration procedure consists in the tuning of the pedestal values. The pedestal is the baseline of the signal, i.e. the ADC recorded value when no input is present. On the one hand, the pedestal value should be minimised, in order to fully exploit the dynamic range for the measurement of the signal amplitude. On the other hand, having a non-zero pedestal is a common practice in electronics devices in order to avoid a possible change in the signal polarisation due to electronic noise or to fluctuations of the ground potential.
+The initial step of the chip calibration procedure consists in the tuning of the pedestal values. The pedestal is the baseline of the signal, i.e. the ADC recorded value when no input is present. On the one hand, the pedestal value should be minimised, in order to fully exploit the dynamic range for the measurement of the signal amplitude. On the other hand, having a non-zero pedestal is a common practice in electronic devices in order to avoid a possible change in the signal polarisation due to electronic noise or to fluctuations of the ground potential.
 Figure~\ref{fig:SignalBaseline} shows a typical signal shape recorded by the HGCROC3 with a pedestal value around 100~ADC counts. Since every signal is built on top of the baseline, it is important to know the pedestal value and subtract it from the measured amplitude in order to extract the real signal amplitude.
 
 \bigbreak
@@ -734,7 +734,7 @@ Figure~\ref{fig:TID_TimeWalk} presents the comparison of the TDC performance on 
 
 \bigbreak
 
-The TID radiation leads to performance degradation in terms of electronics noise: a +$20\%$ increase in the noise is observed at the end of the exposure. Figure~\ref{fig:TID_Noise} shows the distribution of the preamplifier noise for the 72 normal channels of the HGCROC3 at the beginning and at the end of the TID irradiation campaign: from an initial value of 1.4~ADC counts, the noise mean reaches 1.75~ADC counts after $345\,\textrm{Mrad}$ dose. 
+The TID radiation leads to performance degradation in terms of electronic noise: a +$20\%$ increase in the noise is observed at the end of the exposure. Figure~\ref{fig:TID_Noise} shows the distribution of the preamplifier noise for the 72 normal channels of the HGCROC3 at the beginning and at the end of the TID irradiation campaign: from an initial value of 1.4~ADC counts, the noise mean reaches 1.75~ADC counts after $345\,\textrm{Mrad}$ dose. 
 
 The noise increase can significantly impact the HGCROC3 performance, reducing the precision of both the ADC and TDC measurements and affecting the particle reconstruction capabilities. This effect will sum up to the evolution of the silicon sensor noise during radiation exposure and needs to be accounted for in the simulation of the end-of-life detector performance.
 
@@ -790,9 +790,11 @@ A correction for this defect has been included the HGCROC3b design.
 
 \begin{figure}
     \centering
-    \subfloat[]{\includegraphics[width=0.32\linewidth]{Figures/HGCAL/TID_Transistors1.pdf}}
-    \subfloat[]{\includegraphics[width=0.32\linewidth]{Figures/HGCAL/TID_Transistors2.pdf}}
-    \subfloat[]{\includegraphics[width=0.32\linewidth]{Figures/HGCAL/TID_Transistors3.pdf}}
+    \subfloat[]{\includegraphics[width=0.3\linewidth]{Figures/HGCAL/TID_Transistors1.pdf}}
+    \hspace{0.1cm}
+    \subfloat[]{\includegraphics[width=0.3\linewidth]{Figures/HGCAL/TID_Transistors2.pdf}}
+    \hspace{0.1cm}
+    \subfloat[]{\includegraphics[width=0.3\linewidth]{Figures/HGCAL/TID_Transistors3.pdf}}
     \caption{Illustration of the TID damage in transistors due to hole trapping in the silicon oxide ($\textnormal{SiO}_2$). A ionising particle, like X-rays, crossing the device creates e-h pairs (a): electrons have a high mobility and are quickly removed, while holes are trapped in low-energy traps (b). The build up of charge creates a distribution of positive charge close to the interface of the gate oxide, leading to voltage threshold shifts or leakage current (c).}
     \label{fig:TID_Transistors}
 \end{figure}
@@ -827,13 +829,13 @@ Moreover, it has highlighted the presence of a floating input node in the TDC ci
 \subsection{Single Event Effect}
 \label{subsec:Single Event Effect}
 
-The Single Event Effect (SEE) irradiation test aims at evaluating the radiation damage induced by a single energetic particle on electronic devices. Differently from the TID irradiation test, the SEE induces very localised and non cumulative effects causing potential malfunctioning inside the data-processing system with multiple consequences. Given the stochastic nature of the effect, it can happen at any moment since the beginning of the operation.
+The Single Event Effect (SEE) irradiation test aims at evaluating the radiation damage induced by a single energetic particle on electronic devices. Differently from the TID irradiation test, the SEE induces very localised and non cumulative effects causing potential malfunctioning inside the data-processing system with multiple consequences. Given the stochastic nature of the effect, it can occur at any moment since the beginning of the operation.
 
-In the LHC radiation environment, SEE events could become an important issue, not much because a small fraction of the enormous data stream would be corrupted, but because some vital detector control functions could be lost due to memory upsets. It is thus important to preserve the device from this kind of potential danger, by implementing tools to secure the static memory registers storing the logic configuration.
+The SEE events could become an important issue for high-energy particle physics experiments, not much because a small fraction of the enormous data stream could be corrupted, but because some vital detector control functions could be lost due to memory upsets. It is thus important to preserve the device from this source of potential danger, by implementing tools to secure the static memory registers storing the logic configuration.
 
 \bigbreak
 
-A SEE is caused by a very high energy deposition in a small volume of the electronic device. The single ionizing particle crossing the silicon device releases charge and creates electron-hole pairs that are collected at one of the microcircuit nodes and produce a temporary current transient in the circuit. 
+A SEE is caused by a very high energy deposition in a small volume of the electronic device. The single ionizing particle crossing the silicon device creates a sudden and sharp charge release, generating electron-hole (e-h) pairs. In the silicon substrate, the charge is collected at one of the microcircuit nodes and produces a temporary current transient in the circuit. 
 
 % Three possible consequences can occur:
 % \begin{itemize}
@@ -848,72 +850,94 @@ A SEE is caused by a very high energy deposition in a small volume of the electr
 %     \item [-] Single Event Latch up (SEL): permanent damage of the device.
 % \end{itemize}
 
-Three possible consequences can occur:
+As a consequence of a high energy deposition in the device, three possible effects can occur:
 \begin{itemize}
-    \item The \textit{Single Event Upset} (SEU) is a non-destructive phenomenon inducing a flip in the bits that store the logic information. The cause lies in the digital part of the electronic device, based on the transistor technology, where the one-bit memory element is designed to have two possible stable states: 0 or 1. An SEU event appears as an error in the information stored either inside the dynamic or the static memory register, i.e. a bit flip from 0 to 1 or the opposite.
+    \item The \textit{Single Event Upset} (SEU) is a non-destructive phenomenon inducing a flip in the bits that store the logic information. The cause lies in the digital part of the electronic device, based on transistor technology, where the one-bit memory element is designed to have two possible stable states: 0 or 1. A SEU event appears as an error in the information stored either inside the dynamic or the static memory register, i.e. a bit flip from 0 to 1 or the opposite.
     \item The \textit{Single Event Transient} (SET) happens when the charge collection creates a spurious current signal changing one of the clock frequencies of the device. The frequency is usually provided to the chip by an analog synthesizer inside the PLL module: if a glitch affects the output signal of this module, all the activities in the chip can suffer from a temporary loss of synchronization, resulting in undesirable circuit response that can vary depending on the circuit topology and the amount of charge collected.
-    \item The \textit{Single Event Latch-up} (SEL) is a permanent destructive event where the current induced by the incident particle is so high to create a short circuit in part of the circuit.
+    \item The \textit{Single Event Latch-up} (SEL) is a permanent destructive event where the current induced by the incident particle is so high that creates a short circuit in part of the device.
 \end{itemize}
 
-The magnitude of these effects and their occurrence depends on the circuit topology and on the characteristics of each particle interaction, from the charge collection efficiency to the time constants of the perturbation effect. 
+The magnitude of these effects and their occurrence depends on the circuit topology and on the characteristics of each particle interaction, including the charge collection efficiency and the time constants of the perturbation effect. 
 
-\bigbreak
+\subsubsection{Ionisation form different particles}
+\label{subsubsec:SEE with Heavy Ions}
 
-\begin{figure} [b]
+\begin{figure}
     \centering
-    \includegraphics[width=0.99\textwidth]{Figures/HGCAL/SEE_ParticleInteraction.pdf}
-    \caption{Caption}
+    \subfloat[]{\includegraphics[width=0.22\textwidth]{Figures/HGCAL/SEE_ParticleInteraction1.pdf}}
+    \hspace{0.1cm}
+    \subfloat[]{\includegraphics[width=0.22\textwidth]{Figures/HGCAL/SEE_ParticleInteraction2.pdf}}
+    \hspace{0.1cm}
+    \subfloat[]{\includegraphics[width=0.22\textwidth]{Figures/HGCAL/SEE_ParticleInteraction3.pdf}}
+    \hspace{0.1cm}
+    \subfloat[]{\includegraphics[width=0.22\textwidth]{Figures/HGCAL/SEE_ParticleInteraction4.pdf}}
+    \caption{Schematic view of the ionisation induced by different particlesin the silicon substrate. Photons (a) produce a small density of e-h pairs, not enough to provoke an instantaneous current variation in the circuit. Protons (b) and neutrons (c) release small (no for neutrons) charge through direct ionisation, while a high density of e-h pairs is produced from the nuclear interaction with the Silicon nuclei. Heavy ions (d) induce extremely large production of e-h pairs, with notable impact on the device.}
     \label{fig:SEE_ParticleInteraction}
 \end{figure}
 
-In the LHC radiation environment different particles can hit the HGCAL read-out system, with different effects depending on the ionization process and the density of e-h pairs produced in the interaction. 
-However, the main radiation damage on HGCROC3 is expected to mainly come from by Minimum Ionizing Particles (MIP), like protons or light hadrons. 
+In the HL-LHC radiation environment, different particles can hit the HGCAL read-out system, with different effects depending on the interaction process and the density of e-h pairs produced. 
 
-In order to test the HGCROC3 radiation hardness against SEE, two irradiation campaigns have been performed with heavy ions and protons. 
+\bigbreak
 
-% The major energy loss mechanisms for charged particles inside matter are ionization and bremsstrahlung, where the former is much more predominant. 
-% The energy loss $dE/dx$ is described through the Stopping Power or Linear Energy Transfer (LET), which is defined as the amount of incident particle energy deposited per unit track length in the material of interest.
-% The energy loss of a minimum ionizing particle (e.g. a proton of about 2~GeV) in silicon is about 3.9~MeV/cm. This energy loss increases rapidly with decreasing energy of the particle, following the Bethe-Bloch formula, up to reach a maximum around 100~keV of kinetic energy.
-% The ionization directly induced by protons is usually not dense enough to provoke an upset in the circuit, but the highest damage is in fact due to indirect ionization: when a proton hits the silicon substrate, it can produce a nuclear interaction and give part of its energy to a nucleus of Silicon. 
-% This charged nuclear recoil is actually a ionizing particle with low energy (usually $<$ 10~MeV) and a limited range ($<$ 10~$\mu$m), but it has enough energy to ionise the substrate and create current inside the circuit.
-% The probability of nuclear interaction caused by protons is low, around $~10^{-5}$, but given the high flux of particles, the probability of having an SEE is not negligible.
+The main energy loss mechanisms for charged particles inside matter are \textit{ionization} and \textit{Bremsstrahlung}, where the former is predominant for high mass particles. 
+The energy loss is described through the Stopping Power or Linear Energy Transfer (LET), which is defined as the amount of incident particle energy deposited per unit track length in the material of interest.
+The energy loss of a minimum ionizing particle (e.g. a proton of about 2~GeV) in silicon is about 3.9~MeV/cm. This energy loss increases rapidly with decreasing energy of the particle, following the Bethe-Bloch formula, up to reaching a maximum around 100~keV of kinetic energy.
+
+The ionization directly induced by protons and other charged light hadrons is not dense enough to provoke current variation in the circuit. 
+However, light hadrons can produce a nuclear interaction in the silicon substrate, kicking a Silicon nucleus out of the lattice structure: the charged nuclear recoil is itself a ionizing particle with low energy (usually $<10$~MeV) and limited penetration range ($<10$~$\mu$m), but has significantly high LET (about 30~GeV/cm) and creates a large amount of current inside the circuit.
+The probability of a nuclear interaction caused by protons and neutrons is generally low, around $~10^{-5}$, but given the high flux of particles the effect is non-negligible and provides the main source of SEE errors at the LHC.
+
+In order to more effectively simulate the effect of the Silicon nuclear recoil, the SEE irradiation tests are often performed using heavy ions. 
+A heavy ion is characterized by high LET, increasing with the ion mass, and large penetration range, so that it can produce a large amount of charge in the silicon substrate, much bigger than the nuclear interaction caused by protons and neutrons.
+As a consequence, heavy ions provide a good method to stress test the device with SEE irradiation campaigns and are commonly used as an alternative to protons.
+
+\bigbreak
+
+A schematic view of various particles interacting with the silicon substrate of the transistor is provided in Figure~\ref{fig:SEE_ParticleInteraction}.
+Photons, such as X-rays and $\gamma$-rays, produce a small density of e-h pairs, which is not enough to provoke an instantaneous current variation in the circuit. 
+Small (for protons) or no (for neutrons) charge is released through direct ionisation, while a high density of e-h pairs is produced from the nuclear interaction with the Silicon nuclei. Heavy ions have extremely high LET and induce a large production of e-h pairs, with notable impact on the device.
+
 % https://indico.cern.ch/event/635099/contributions/2570672/attachments/1456364/2249943/Single_Event_Effecs_Radiation_Course_May_2017_SEE_CBP.pdf
 
 \subsubsection{SEE with Heavy Ions}
 \label{subsubsec:SEE with Heavy Ions}
 
-The first SEE campaign has been performed using a beam of low-energy heavy ions at the UCL cyclotron (Louvain).
-The facility provides several types of heavy ions with different values of mass-to-charge ratio (M/Q) and Linear Energy Transfer (LET), as shown in Table \ref{tab:SEE_Ions}, at a fixed flux of $10^4\,\textrm{s}^{-1}\,\textrm{cm}^{-2}$.
+The first SEE campaign has been performed using a beam of low-energy heavy ions at the UCL cyclotron (Louvain, BE).
+The facility provides several types of heavy ions with different values of mass-to-charge ratio (M/Q) and LET.
+Since the heavy ions have to penetrate a Silicon layer of approximately 70~$\mu$m before reaching the area of the devise interested by SEE, a correction is applied to compute the effective LET of each ion after crossing 70~$\mu$m of Silicon. The corresponding value is reported in Table~\ref{tab:SEE_Ions}.
 
-\begin{table}[]
+\begin{figure}[t]
     \centering
-    \begin{tabular}{c | c | c | c}
+    \includegraphics[width=0.45\linewidth]{Figures/HGCAL/SEE_SV.pdf}
+    \caption{Difference between light hadrons (protons and neutrons) and heavy ions irradiation: the digital SV (dashed blue line) is typically smaller than the analog SV (dashed pink line).}
+    \label{fig:sensitivevolume}
+\end{figure}
+
+\begin{table}[b]
+    \centering
+    \begin{tabular}{c | c | c | c | c}
         \hline
         \hline
-        \multirow{2}{*}{Ion} & \multirow{2}{*}{M/Q} & Range & LET \\
-        &  & [$\mu$m] & [$\textrm{MeV}/\textrm{mg}/\textrm{cm}^2$] \\
+        \multirow{2}{*}{Ion} & \multirow{2}{*}{M/Q} & Range & LET & Effective LET \\
+        &  & [$\mu$m] & [$\textrm{MeV}/\textrm{mg}/\textrm{cm}^2$] & [$\textrm{MeV}/\textrm{mg}/\textrm{cm}^2$] \\
         \hline
-        Ne & 3.14 & 202.0 & 3.3 \\
-        Al & 3.37 & 131.2 & 5.7 \\
-        Ar & 3.33 & 120.5 & 9.9 \\
-        Cr & 3.31 & 107.6 & 16.0 \\
-        Ni & 3.22 & 100.5 & 20.4 \\
-        Kr & 3.35 & 94.2 & 32.4 \\
-        Xe & 3.54 & 73.1 & 62.5 \\
+        Ne & 3.14 & 202.0 & 3.3 & 4 \\
+        Al & 3.37 & 131.2 & 5.7 & 8.26 \\
+        Ar & 3.33 & 120.5 & 9.9 & 14.76 \\
+        Cr & 3.31 & 107.6 & 16.0 & 25.2 \\
+        Ni & 3.22 & 100.5 & 20.4 & 31.1 \\
+        Kr & 3.35 & 94.2 & 32.4 & 38.5 \\
+        Xe & 3.54 & 73.1 & 62.5 & $<$10 \\
         \hline
         \hline
     \end{tabular}
     \caption{List of the available heavy ions at the UCL cyclotron. Each ion is characterised by a different mass-to-charge ratio (M/Q), penetration range in Silicon material, and Linear Energy Transfer (LET).}
     \label{tab:SEE_Ions}
 \end{table}
-% [FIXME] Add Corrected LET after 70 um of Silicon
 
 \bigbreak
 
 Since the HL-LHC radiation environment will be dominated by light hadrons, like protons and neutrons, some fundamental differences in the particle interactions have to be considered when characterizing a device with heavy ions.
-When a light hadron hits the device, it can produce a hadronic interaction and generate a shower of secondary particles and a nuclear recoil - in some cases even several fragments.
-This charged nuclear recoil is an ionizing particle with low energy (typically less than $10\,\textrm{MeV}$) and a limited range (below $10\,\mu\textrm{m}$) that travels through the substrate creating electron-hole pairs. The collection of this charge by a node of the circuit can temporarily alter the status of the device.
-A heavy ion can simulate the ionization caused by the nuclear recoil, but with a larger range and a bigger energy deposit (Fig.~\ref{fig:sensitivevolume}).
 
 The SEE occurrence depends on the \textit{Sensitive Volume} (SV) of the device, which is the region where the charge collection can contribute to a possible alteration of the circuit:
 \begin{itemize}
@@ -921,26 +945,36 @@ The SEE occurrence depends on the \textit{Sensitive Volume} (SV) of the device, 
     \item [-] for a SET on the analog part, all the signals can have a contribution: the analog SV significantly depends on the particle type, making the heavy-ion irradiation a unreliable estimate in terms of SETs.
 \end{itemize}
 
-\begin{figure}[b]
+Figure~\ref{fig:sensitivevolume} shows the difference between the analog and digital SV for protons with respect to heavy ions.
+The heavy ion irradiation campaign can provide an effective alternative to protons for the estimation of the SEU on the digital component of the device, but cannot be considered a reliable estimate for the SET on the analog part.
+The heavy ion irradiation test also furnish a very important stress test for SEL: as proposed in \cite{federico}, the absence of latch-ups for high LET values (around 40~MeV/mg/$\textrm{cm}^2$) will guarantee the robustness of the device against latch-ups in an accelerator environment.
+
+\bigbreak
+
+During the SEE campaign, a prototype of the HGCROC3 is closed in a vacuum chamber at a stable temperature of 7.2~$^{\circ}$C and irradiated with beams of various heavy ions, with different values of mass and LET, at a fixed flux of $10^4$~$\textrm{s}^{-1}\,\textrm{cm}^{-2}$. 
+The digital components of the HGCROC3 have been tested by performing two sets of measurements: the I2C and the DAQ test.
+
+\begin{figure}
     \centering
-    \includegraphics[width=0.85\linewidth]{figures/sensitivevolume.pdf}
-    \caption{Difference between light hadrons (protons and neutrons) and heavy ions irradiation: the digital SV (dashed blue line) is typically smaller than the analog SV (dashed pink line).}
-    \label{fig:sensitivevolume}
+    \subfloat[]{\includegraphics[width=0.45\linewidth]{Figures/HGCAL/SEE_AutoreloadOFF.pdf}}
+    \hspace{1.cm}
+    \subfloat[]{\includegraphics[width=0.45\linewidth]{Figures/HGCAL/SEE_AutoreloadON.pdf}}
+    \caption{Representation of the \textit{Triplication} logic with \textit{AutoReload} mode enabled (a) or disabled (b). The values of the I2C bits are stored in three different cells: if a SEU event changes the value of one cell, the majority vote prevents the bit flip. When the \textit{AutoReload} mode is enabled, as soon as a change in the values is detected, the three cells are refreshed according to the majority vote.}
+    \label{fig:Autoreload}
 \end{figure}
 
-The heavy ions irradiation is also a very important stress test for SELs: as proposed in \cite{federico}, the absence of latch-ups for high LETs ($\sim$$40\,\textrm{MeV}/\textrm{mg}/\textrm{cm}^2$) will guarantee the robustness of the device against latch ups in an accelerator environment.
+\paragraph{I2C test}
 
-During the SEE campaign, the digital components of the HGCROC3 are tested with two measurements: the I2C and the DAQ test.
+The I2C of the HGCROC3 holds 2573 configuration parameters, encoded in 8956 bits, storing the device's configuration and operation settings. 
+Before starting the irradiation test, all the parameters are correctly set to given values, and during irradiation the I2C registers are read to check for possible bit flips.
 
-\vspace{-2.8mm}
-\subsection*{I2C test}
- The I2C of the HGCROC3 holds 2573 configuration parameters (8956 bits) that are tested against possible SEUs. All the parameters are protected by the triplication logic - the value of each bit is stored into three different cells - and by the \textit{AutoReload} mode: whenever an SEU happens changing the value of one cell, the I2C sends a command to refresh all the cell values according to the majority vote.
- 
- During irradiation all the bits are monitored and the resulting numbers of errors are summarized in Table \ref{tab:I2C}: while multiple bit flips are observed when the \textit{AutoReload} mode is disabled, no bit flip is observed when the \textit{AutoReload} mode is enabled.
+In order to protect the I2C registers against possible SEUs, the I2C bits use \textit{Triplication} logic: the value of each bit is stored into three different cells, such that if a SEU event changes the value of one cell, the logic of the majority still keeps the bit value to the original one, as represented in Figure~\ref{fig:Autoreload}a. However, if two or more SEU events impact the same bit, the value is corrupted and the triplication logic in its own does not suffice for long irradiation exposure. 
+An additional protection against bit flips is provided by the \textit{AutoReload} mode, that allows for a continuous check of the cell values such that, if inconsistency between the values of the triplicated cells is found, the I2C sends a command to refresh all the cell values according to the majority vote, as represented in Figure~\ref{fig:Autoreload}b.
+
+During irradiation, all the I2C bits are monitored and the resulting numbers of errors are summarized in Table \ref{tab:I2C}: while multiple bit flips are observed when the \textit{AutoReload} mode is disabled, no bit flip is observed when the \textit{AutoReload} mode is enabled. The I2C test results show the successful capability of the \textit{AutoReload} mode in preventing SEU on the HGCROC3 I2C registers.
 
 \begin{table}[]
     \centering
-    \caption{Results of the I2C test when the \textit{AutoReload} is disabe (OFF) or enable (ON).}
     \begin{tabular}{c | c c | c c}
         \hline
         \hline
@@ -958,36 +992,56 @@ During the SEE campaign, the digital components of the HGCROC3 are tested with t
         \hline
         \hline
     \end{tabular}
+    \caption{Results of the I2C test when the \textit{AutoReload} is disabe (OFF) or enable (ON). The irradiation is performed with various types of heavy ions, with different LET values and acquisition time.}
     \label{tab:I2C}
 \end{table}
 
-\vspace{-2.8mm}
-\subsection*{DAQ test}
-The DAQ test checks for possible SEUs on the Data and Trigger paths (Fig.~\ref{fig:paths}) of the HGCROC3 during the data acquisition. 
-The Trigger path is composed by a fixed header and four compressed energy sums.
-The Data path is the concatenation of a header, data coming from common mode, normal and calibration channels, the Cyclic Redundancy Check (CRC) - that sums all the previous bits to check the integrity in the transmission -, and a final idle word.
-Inside the header, the bunch crossing, event and orbit counters are triplicated, while the remaining data are processed with the \textit{Hamming} encoding, following the logic of \textit{Single Error Correction - Double Error Detection} (SEC-DED).
+\paragraph{DAQ test}
 
-In a standard acquisition the potential bit flips could get lost among the random noise fluctuations of the data, for this reason a fixed data pattern is transmitted to all the channels and then compared to the output pattern.
+The DAQ test aims at checking for possible SEU errors on the Data and Trigger paths of the HGCROC3 under irradiation. 
+A schematic view of the Data and Trigger paths can be found in Figure~\ref{fig:TriggerDataPath}.
+The Trigger path transmits the trigger information to the back-end electronics: the energy recorded in different cells is summed and compressed to 7-bits information, then the energy sums are concatenated in a 32-bits word packet preceded by a fixed pattern header.
+The Data path contains the digitised charge and time information coming from the channels. The word packet is composed by a header, followed by the information coming from the common mode (CM), normal, and calibration (Calib) channel. In addition, a Cyclic Redundancy Check (CRC) flag is stored to check the integrity in the transmission, and a final idle word maintains synchronization between transmitter and receiver.
+Inside the Data path header, the bunch crossing, event and orbit counters are stored. 
 
-During the DAQ test no error is detected in the triplicated counters; just few SEU events are observed on the non-triplicated parts, without raising particular concern since they are just affecting the data and not the state of the chip. 
-Due to the poor statistics, it is not possible to extrapolate a reliable estimate for the HL-LHC radiation environment.
+The logic inside the Data and Trigger paths is not triplicated as, unlike the I2C static registers, the data processing is dynamic and constantly flowing from the chip to the downstream electronics. However, data is processed with the \textit{Hamming encoding}, a method that stores redundant bits in the word packet to allow for the identification and correction of of single-bit errors and for the detection of double-bit errors, an algorithm known as Single Error Correction - Double Error Detection (SEC-DED). The only triplicated information in the Data path are the counters for bunch crossing, event, and orbit, since SEU errors on this information could become critical for the system operations. 
 
-Besides few SEUs, several SETs are observed on the analog part of the HGCROC3, changing the output frequency of the PLL and causing link misalignments. Two cases are reported:
+During irradiation, the data processing is tested against SEU both for the triplicated and for the Hamming encoded information.
+Since the potential bit flips could get lost among the random noise fluctuations of the data in a standard acquisition, a fixed data pattern is transmitted to all the channels and compared to the output pattern.
+The DAQ test is performed using multiple heavy ions with different LET and the results are reported in Table~\ref{tab:DAQ}. No error is detected in the counters, proving the successful protection of the triplication logic.
+Only few SEU events are observed on the non-triplicated trigger sums and in the CRC; the channel information is not significantly affected by SEU either, and in all cases the data corruption is detected by the Hamming encoding. 
+
+By measuring the error rate under heavy ions irradiation with different values of LET, it would be possible to extrapolate the expected error rate in a proton radiation environment~\cite{federico}; in this case, due to the poor statistics, the heavy ion irradiation campaign is not able to provide a reliable estimate for the SEU error rate in the HL-LHC radiation environment.
+However, the absence of glitches and latch-ups during the heavy ion irradiation with Kripton, providing a LET of 38.5~MeV/mg/$\textnormal{cm}^2$, validates the protection of the HGCROC3 against SEL.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{Figures/HGCAL/TriggerDataPath.pdf}
+    \caption{Scheme of the Trigger and Data paths of the HGCROC3. In the Trigger path, the energy sum of different channels is computed, the data is compressed and concatenated before being transmitted to the back-end electronics for the L1T decision. The Data path stores the information from the common mode (CM), normal, and calibration (Calib) channels; in the header, the counters for bunch crossing, event, and orbit are stored with triplicated logic.}
+    \label{fig:TriggerDataPath}
+\end{figure}
+
+\bigbreak
+
+During the DAQ test, several SET errors are observed on the analog part of the HGCROC3. The SET is due to particles releasing a large amount of charge in the PLL circuit, which provides the operation frequencies to the entire device: the sudden charge deposit can produce a change in the PLL output and variation in the frequency, causing link misalignments.
+Two different types of SET errors have been identified:
 \begin{itemize}
-    \item [-] short SET: the data transmission fails for just one bit and the rest of the data flow is correct;
-    \item [-] long SET: the transmission is lost for longer time, leading to a constant shift in the string of bits; a link realignment is necessary to restore the data flow.
+    \item [-] Short SET: the data transmission fails for just one bit and the rest of the data flow is correct; the CRC contains a corruption flag establishing an error in the data transmission.
+    \item [-] Long SET: the transmission is in error for longer time, leading to a constant shift in the string of bits; the whole word packet is permanently shifted and the header pattern cannot be recognised by the downstream electronics. A link reset is required to recover the correct operation mode and restore the data flow.
 \end{itemize}
 
-In Table \ref{tab:DAQ} a summary of all the SEU and SET events observed during the DAQ test is shown, where it is important to recall that the estimated number of SET events is not reliable under heavy ions irradiation.
+Table~\ref{tab:DAQ} provides a summary of the number of SET events observed under irradiation with different types of heavy ions. 
 
-No SEL events are observed during the SEE campaign with heavy ions.
+\bigbreak
 
-After the SEE campaign with heavy ions, it is evident that an irradiation testing of the HGCROC3 under proton beam is necessary to provide an accurate estimate for both the SEU and the SET rates. 
+When comparing the SEU and SET error rates, it is important to recall that the PLL is part of the analog component of the HGCROC3 and that the heavy ion irradiation provides too severe estimates for the SET rate with respect to the light hadron irradiation environment of the HL-LHC.
 
-\begin{table}[]
+On the one hand, the presence of Short SET does not raise particular concern for the HGCROC3 operation, as the impact on the data processing and transmission is relatively low; on the other hand, the potential Long SET occurrence, even if at lower rate, would have a drastic impact on the device operation, not only because of the communication with the downstream electronics, but also because of the potential corruption of a large quantity of trigger data from extended areas of the detector that could alter the data taking.
+
+The heavy ion irradiation campaigns provides a serious red flag for the HGCROC3 vulnerability to SET, suggesting that a dedicated proton irradiation campaign is necessary in order to verify the potential presence of Long SET in the HL-LHC radiation environment and provide an more accurate estimate for the SEU and the SET rates. 
+
+\begin{table}
     \centering
-    \caption{Results of the DAQ test in terms of SEU and SET events.}
     \begin{tabular}{c | c | c c c c | c c}
         \hline
         \hline
@@ -1004,82 +1058,205 @@ After the SEE campaign with heavy ions, it is evident that an irradiation testin
         \hline
         \hline
     \end{tabular}
+    \caption{Results of the DAQ test in terms of SEU and SET events. The irradiation is performed with various types of heavy ions, with different LET values and acquisition time.}
     \label{tab:DAQ}
+\end{table}
+
+\subsubsection{SEE with Protons}
+\label{subsubsec:SEE with Protons}
+
+The second SEE campaign has been performed using a 64~MeV proton beam at the Arronax cyclotron (Nantes, FR).
+
+Since the HGCAL radiation environment will be dominated by light hadrons, the proton irradiation gives a more realistic description of the expected HL-LHC environment with respect to heavy ions: as described in \cite{federico}, a proton energy of more than 60~MeV is sufficient to simulate all the possible radiation damage of the full proton energy range at the HL-LHC. Moreover, with the provided flux of $10^{10}\,\textrm{s}^{-1}\,\textrm{cm}^{-2}$, four orders of magnitude higher than the average expected HGCAL flux, it is possible to collect enough statistics in a relatively short amount of irradiation time.
+
+\bigbreak
+
+The proton irradiation set-up is more complex with respect to heavy ions and is represented in Figure~\ref{fig:SEE_Proton_Setup}. The proton beam is created in the center of the Arronax facility, where the cyclotron is located, and then extracted through a beam pipe directed to a dedicated experimental cavern. 
+Since protons have a higher potential for neutron production when interacting with materials, the experimental protocol necessitates extensive shielding and safety measures to protect both the equipment and personnel from secondary radiation. 
+
+The mezzanine board hosting the HGCROC3 prototype is aligned with the proton beam, and a collimator is used to better localise the beam. 
+The powering modules and the hexacontroler for the data acquisition is located at a safe distance from the beam and protected through a plastic-lead shielding.
+During irradiation, access to the cavern is not permitted and the data acquisition is entirely performed from an adjacent control room. Even after the end of the irradiation campaign, access to the cavern is restricted and the irradiated material needs to wait for radioactive isotopes to decay to safe levels before being returned.
+
+\bigbreak
+
+The main target of the proton campaign is to test the HGCROC3 against SEU and SET effects, collecting higher statistics with respect to the previous heavy ion campaign. 
+The digital components of the HGCROC3 are tested by performing the same DAQ test described in the heavy ion campaign, targeting potential errors in the Data and Trigger paths.
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.34\linewidth]{Figures/HGCAL/SEE_Proton_Setup1.pdf}
+    \includegraphics[height=0.34\linewidth]{Figures/HGCAL/SEE_Proton_Setup2.pdf}
+    \caption{The experimental set-up of the proton SEE irradiation campaign performed at the Arronax cyclotron (Nantes, FR). On the left, a picture of the experimental cavern with the proton beam pipe. On the right, a close-up showing the mezzanine board mounted on a metal support and the collimator for the beam focusing.}
+    \label{fig:SEE_Proton_Setup}
+\end{figure}
+
+Two irradiation campaigns are performed: the HGCROC3 is irradiated with a flux of 1.51~$10^{10}\,\textrm{s}^{-1}\,\textrm{cm}^{-2}$ for 12~hours in the first irradiation campaign; during the second irradiation campaign, the HGCROC3 is irradiated with a flux of 2.20~$10^{10}\,\textrm{s}^{-1}\,\textrm{cm}^{-2}$. for 13~hours. 
+
+The number of SEU and SET errors and the corresponding rates are summarized in Tables~\ref{tab:SEE_protons1}~and~\ref{tab:SEE_protons2} respectively, and provide compatible results between the two campaigns.
+No error is detected on the triplicated counters, confirming the result obtained with the previous heavy ion campaign; only few SEU errors are observed on the Trigger and Data paths non-triplicated parts; several errors, including both Short and Long SET, are recorded on the analog PLL. The proton irradiation validates the types of errors already observed during the heavy ion irradiation test, but the higher error statistics allows for a more reliable estimate of the expected error rate in the HGCAL environment.
+
+\bigbreak
+
+Given the recorded number of SEU and SET errors, it is possible to extract the corresponding rates dividing by the acquisition time. 
+The data acquisition is performed through a loop of single-acquisition runs; during each acquisition, the errors can only happen during the data processing time, which is different for each part of the Data and Trigger paths.
+\begin{itemize}
+    \item [-] The trigger information is stored for 4~BX periods in the device, corresponding to 100~ns for each acquisition run.
+    \item [-] The CRC flag is computed during the transmission of the DAQ packet, which lasts for 40~BX periods, corresponding to 1~$\mu$s for each acquisition run.
+    \item [-] The RAM can be affected by SEU during the whole buffering time, which lasts for 512~BX periods, corresponding to 12.8~$\mu$s for each acquisition run.
+    \item [-] The Short SET can only occur during the transmission of the DAQ packet, which lasts for 40~BX periods, corresponding to 1~$\mu$s for each run.
+    \item [-] The SEU errors on the counters and the Long SET on the PLL can occur at any time, even when there is no acquisition: the total irradiation time is considered for these two components.
+\end{itemize}
+
+The rate is consequently computed as:
+\begin{equation}
+    \textnormal{Rate}\;(\textnormal{Arronax}) = \frac{\textnormal{\# Errors}}{\textnormal{Time}} = \frac{\textnormal{\# Errors}}{\textnormal{DAQ Time}\cdot N_{runs}}
+\end{equation}
+where the $\textnormal{DAQ Time}$ is the single-acquisition processing time of each component, and $N_{runs}$ is the total number of runs performed during the irradiation campaign.
+
+The extracted rate value depends on the specific proton flux conditions during the irradiation campaign. In order to provide a measure of the error probability, independent of the experimental setup, the error cross section is computed:
+\begin{equation}
+    \sigma = \frac{\textnormal{Rate}\;(\textnormal{Arronax})}{\Phi\;(\textnormal{Arronax})}
+\end{equation}
+where $\Phi\;(\textnormal{Arronax})$ is the proton flux during the irradiation campaign.
+
+Assuming that the rate is linearly dependent on the flux, the per-chip expected error rate in the HGCAL detector can be estimated as:
+\begin{equation}
+    \textnormal{Rate}\;(\textnormal{HGCAL}) = \Phi\;(\textnormal{HGCAL}) \cdot \sigma
+\end{equation}
+where the expected HGCAL average flux is $\Phi\;(\textnormal{HGCAL})=2\cdot10^6$~$\textnormal{s}^{-1}$~$\textnormal{cm}^{-2}$.
+
+The cross section results for the first (22 December 2022) and second (3 February 2023) irradiation campaigns can be better visualised in Figure~\ref{fig:SEE_CrossSection} for the different components. The two campaigns provide comparable results in terms of SEU and SET probability; the slight discrepancy is possibly due to the uncertainties on the flux value, which are not considered in the cross section computation.
+
+\begin{table}
+    \centering
+    \begin{tabular}{ l | c | c | c | c | c }
+        \hline
+        \hline
+        & Errors & Time & Rate Arronax [$s^{-1}$] & Rate HGCAL [$s^{-1}$] & Cross section [$cm^{2}$]\\
+        \hline
+        Counters & - & 12~h & $<2.0$~$10^{-5}$ & $<3.1$~$10^{-9}$ & $<1.5$~$10^{-15}$\\
+        Trigger & 23 & 20~s & $1.17\pm0.25$ & $(1.5\pm0.3)$~$10^{-4}$ & $(7.8\pm1.6)$~$10^{-11}$ \\
+        CRC & 4 & 200~s & $(2.0\pm1.1)$~$10^{-2}$ & $(2.6\pm0.4)$~$10^{-6}$ & $(1.3\pm0.7)$~$10^{-12}$\\
+        RAM & 49 & 2520~s & $(1.9\pm0.3)$~$10^{-2}$ & $(2.6\pm0.4)$~$10^{-6}$ & $(1.3\pm0.2)$~$10^{-12}$\\
+        Short SET & 17 & 200~s & $(8.6\pm0.2)$~$10^{-2}$ & $(1.1\pm0.3)$~$10^{-5}$ & $(5.8\pm1.4)$~$10^{-12}$ \\
+        Long SET & 80 & 12~h & $(1.8\pm0.2)$~$10^{-3}$ & $(2.4\pm0.2)$~$10^{-7}$ & $(1.2\pm0.1$~$10^{-13}$ \\
+        \hline
+        \hline
+    \end{tabular}
+    \caption{Results of the DAQ test in terms of SEU and SET events during the first proton campaign (22 December 2022) at a flux of 1.51~$10^{10}\,\textrm{s}^{-1}\,\textrm{cm}^{-2}$.}
+    \label{tab:SEE_protons1}
+\end{table}
+
+\begin{table}
+    \centering
+    \begin{tabular}{ l | c | c | c | c | c }
+        \hline
+        \hline
+        & Errors & Time & Rate Arronax [$s^{-1}$] & Rate HGCAL [$s^{-1}$] & Cross section [$cm^{2}$]\\
+        \hline
+        Counters & - & 13~h & $<2.1$~$10^{-5}$ & $<1.9$~$10^{-9}$ & $<9.7$~$10^{-16}$\\
+        Trigger & 38 & 34~s & $1.12\pm0.18$ & $(1.0\pm0.2)$~$10^{-4}$ & $(5.7\pm0.9)$~$10^{-11}$ \\
+        CRC & 30 & 340~s & $(9\pm1)$~$10^{-2}$ & $(8.1\pm1.6)$~$10^{-6}$ & $(4.5\pm0.8)$~$10^{-12}$\\
+        RAM & 127 & 4352~s & $(29\pm2)$~$10^{-2}$ & $(2.6\pm0.2)$~$10^{-6}$ & $(1.5\pm0.1)$~$10^{-12}$\\
+        Short SET & 85 & 340~s & $(2.5\pm0.3)$~$10^{-1}$ & $(2.2\pm0.3)$~$10^{-5}$ & $(1.3\pm0.1)$~$10^{-11}$ \\
+        Long SET & 190 & 13~h & $(4.1\pm0.3)$~$10^{-3}$ & $(3.6\pm0.3)$~$10^{-7}$ & $(2.1\pm0.1$~$10^{-13}$ \\
+        \hline
+        \hline
+    \end{tabular}
+    \caption{Results of the DAQ test in terms of SEU and SET events during the first proton campaign (3 February 2023) at a flux of 2.20~$10^{10}\,\textrm{s}^{-1}\,\textrm{cm}^{-2}$.}
+    \label{tab:SEE_protons2}
 \end{table}
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{figures/paths.pdf}
-    \caption{Trigger and Data paths of the HGCROC3.}
-    \label{fig:paths}
+    \includegraphics[width=0.7\linewidth]{Figures/HGCAL/SEE_CrossSection.pdf}
+    \caption{Estimate for the cross section probability for SEU and SET errors on different HGCROC3 components, resulting from the first (22 December 2022) and second (3 February 2023) proton irradiation campaigns. The slight discrepancy in the results is possibly due to the missing uncertainties on the flux value.}
+    \label{fig:SEE_CrossSection}
 \end{figure}
 
+The SEU error probability on the Trigger path is contained, with an expected per-chip rate in the HGCAL environment below $10^{-4}$~$\textnormal{s}^{-1}$, corresponding on average to approximately one SEU every 3~hours of data taking.
+Potential errors on the CRC and the RAM are approximately two orders of magnitude rarer,  while SEU errors in triplicated counters are estimated to occur less frequently than once every 30 years.
 
+The results for the Short and Long SET probability are more positive with respect to the heavy ion campaign. The Short SET is expected to occur approximately once per day during data taking, but the consequent impact does not rise particular concerns.
+The estimate for the Long SET probability is significantly lower and corresponds to one occurrence every 2.5~years for each chip. However, considering that the HGCAL will contain 120 thousands of HGCROC3 chips, the Long SET error is expected to cause one link loss every 2~minutes in the detector.
+To mitigate the effects of synchronisation loss caused by the Long SET, a new fast command has been introduced in the design of the HGCROC3b, with the possibility of realigning the links for the data transmission in case a misalignment is detected. This procedure will allow for a fast and automatic fix of the link loss without interrupting the data acquisition.
 
+\bigbreak
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-In a simplified picture of the problem, we can identify two main parameters: the Sensitive Volume (SV) and the Critical Energy ($E_{crit}$).
-The SV is defined as the volume in which the incident particle must strike to cause an upset. The definition of the SV depends on the nature of the phenomenon.
-To have a Single Event Effect on the digital part a very fast current signal is required meaning that only the charge that is contained in what is defined as the “digital sensitive volume” can contribute to the effect. For a Single Event Effect on the analog part all the signals contribute and the sensitive volume is usually bigger.
+Given the high flux employed during the proton irradiation campaign, a non-negligible amount of dose is injected into the HGCROC3, allowing for the investigation of the noise increase with dose. As shown in Figure~\ref{fig:NoiseEvolution}, the proton irradiation leads to a 20$\%$ noise increase after 130~Mrad injected dose, validating the results obtained during the TID campaign with X-rays.
 
 \begin{figure}
-    \begin{minipage}{0.48\textwidth}\centering
-         \includegraphics[width=0.7\textwidth]{SEE_interaction_proton.png}
-         \caption{Caption}
-         \label{Fig:Data1}
-    \end{minipage}
-    \begin{minipage}{0.48\textwidth}\centering
-         \includegraphics[width=0.7\textwidth]{SEE_interaction_hi.png}
-         \caption{Caption}
-         \label{Fig:Data1}
-    \end{minipage}
+    \centering
+    \includegraphics[width=0.7\linewidth]{Figures/HGCAL/NoiseEvolution.pdf}
+    \caption{Noise evolution with dose observed during the TID irradiation campaign with X-rays and during the SEE irradiation campaign with protons.}
+    \label{fig:NoiseEvolution}
 \end{figure}
 
+\bigbreak
 
-\subsubsection*{The SEU phenomenon}
+During the second proton irradiation campaign, a dedicated test is performed on the PLL to further examine its behaviour under irradiation, and to better characterise the SET phenomena.
 
-The HGCROC design is based on the CMOS technology, where the 1-bit memory element is designed to have two stable states: in each state two transistors are on and two are off.
+\paragraph{PLL test}
 
-% Modeling and simulation of single-event effect in CMOS circuit
+In the HGCROC3, the PLL provides all the clock signals that define the frequency for the device synchronisation. Starting from the 40~MHz LHC clock, the PLL generates a synchronous 1.28~GHz clock for the data transmission and, through a series of dividers, produces the remaining lower frequencies clocks used for the signal sampling and serialisation. The effect of a SET on the PLL circuitry is the change of the output clock frequency, causing temporary or permanent synchronisation loss.
 
+During irradiation, the stability of the PLL frequency is monitored through a scope. The 
+40~MHz output clock is a simple square signal with fixed 25~ns period.
+When a SET occurs, the clock frequency is altered, and the period varies accordingly. 
+In the PLL, the \textit{Phase Shifter} detects a misalignment with respect to the reference clock and adapts the \textit{Voltage-Controlled Oscillator} (VCO) to restore the correct frequency. This process creates a fluctuation of the clock period, called \textit{phase jump}, which is illustrated in Figure~\ref{fig:SET_PLL}.
 
+The oscilloscope is set to trigger the phase jumps with a period variation larger than 0.1~ns. During the irradiation campaign, 774 phase jumps are detected and characterised in order to find a possible correlation with Short SET and Long SET errors observed in the data acquisition.
 
+No clear sign of correlation between the phase jump amplitude and the presence of Long SET is identified, instead a dependence on the phase jump profile is noticed.
+Two main categories of phase jumps are defined: 
+\begin{itemize}
+    \item [1.] phase jumps with a large amplitude and long duration, as shown in Figure~\ref{fig:SET_PhaseJump}~(a);
+    \item [2.] phase jumps characterised by the presence of an initial spike of medium amplitude followed by a small oscillation, as shown in Figure~\ref{fig:SET_PhaseJump}~(b).
+\end{itemize}
+The Long SET errors are found to be correlated to phase jumps of the second typology, while no clear evidence of correlation to a particular type of phase jump is found for Short SET errors.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\linewidth]{Figures/HGCAL/SET_PLL_Clock.pdf}
+    \includegraphics[width=0.45\linewidth]{Figures/HGCAL/SET_PLL_Period.pdf}
+    \caption{Effect of a SET error on the PLL 40~MHz clock on the square signal (left) and on the period (right). When a particle hits the PLL, the square signal shrinks and the period decrease; the circuit detects a misalignment with respect to the reference clock and decreases the frequency, causing a clock stretching and a consequent period increase. After the oscillation, the 40~MHz frequency is restored.}
+    \label{fig:SET_PLL}
+\end{figure}
 
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.32\linewidth]{Figures/HGCAL/SET_Error2.pdf}}
+    \subfloat[]{\includegraphics[width=0.32\linewidth]{Figures/HGCAL/SET_Error1.pdf}}
+    \subfloat[]{\includegraphics[width=0.32\linewidth]{Figures/HGCAL/SET_Error3.pdf}}
+    \caption{Different phase jumps typologies observed during the irradiation campaign. Phase jumps showing large amplitude and long duration (a) are usually not correlated to digital errors. Phase jumps characterised by the presence of an initial spike followed by an oscillation (b) are correlated to the presence of Long SET on the PLL. In the new PLL version, including a partial triplication, the SET is not propagated and the initial spike is no longer followed by an oscillation of the frequency (c).}
+    \label{fig:SET_PhaseJump}
+\end{figure}
 
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.45\linewidth]{Figures/HGCAL/PLL_HGCROC3.pdf}}
+    \subfloat[]{\includegraphics[width=0.45\linewidth]{Figures/HGCAL/PLL_HGCROC3b.pdf}}
+    \caption{Schematic view of the current version of the PLL in the HGCROC3 (a) and the new triplicated version incorporated in the HGCROC3b design (b).}
+    \label{fig:PLL_HGCROC3b}
+\end{figure}
 
+\bigbreak
 
+During the proton irradiation campaign, an additional device containing the same PLL circuit as the HGCROC3, in a partially triplicated version, has been irradiated.
+The same characterisation study on the phase jumps has been performed, in order to verify potential improvements in terms of SET protection.
+The new PLL version still shows a comparable number of phase jumps, but with a substantial change: the phase jumps showing an initial spike are no longer followed by any frequency oscillation, as shown in Figure~\ref{fig:SET_PhaseJump}~(c).
 
+The difference in the spike typology is directly connected to the new triplicated version of the PLL circuit, as illustrated in Figure~\ref{fig:PLL_HGCROC3b}.
+In the HGCROC3 version of the PLL, when a SET causes a phase jump, it propagates through the PLL circuit leading to the oscillation in the frequency.
+In the new PLL version, the 40~MHz clock is triplicated and the effect of a SET does not propagate to the circuit, resulting in no oscillation of the frequency and consequently in a reduced number of Long SET errors.
 
-
-
-
-
-
-
-
-
+The new triplicated version of the PLL has been incorporated in the new HGCROC3b design and is expected to further reduce the occurrence of SET errors in the device.
 
 \section{Conclusion}
 
-The HGCROC3 is the final version of the front-end readout ASIC specifically designed for the future HGCAL. During its intensive testing, the HGCROC3 has revealed promising performance in terms of noise, charge and time measurements.
-
-Its radiation tolerance has been tested under several irradiation campaigns.
-The TID campaign with X-rays has proven the radiation tolerance of the HGCROC3 up to $345\,\textrm{Mrad}$ of dose. An increase in the analog power consumption has unveiled a floating node in the circuit that will be corrected in the next submission of the chip.
-The SEE campaign with heavy ions has tested the robustness of the new digital features - AutoReload, triplication of the digital counters, serializers - against SEUs and SELs.
-
-An additional proton irradiation will be conducted to extract reliable quantitative estimates for the error rates.
+% The HGCROC3 is the final version of the front-end readout ASIC specifically designed for the future HGCAL. During its intensive testing, the HGCROC3 has revealed promising performance in terms of noise, charge and time measurements.
+% Its radiation tolerance has been tested under several irradiation campaigns.
+% The TID campaign with X-rays has proven the radiation tolerance of the HGCROC3 up to $345\,\textrm{Mrad}$ of dose. An increase in the analog power consumption has unveiled a floating node in the circuit that will be corrected in the next submission of the chip.
+% The SEE campaign with heavy ions has tested the robustness of the new digital features - AutoReload, triplication of the digital counters, serializers - against SEUs and SELs.
+% An additional proton irradiation will be conducted to extract reliable quantitative estimates for the error rates.
