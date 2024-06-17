@@ -29,6 +29,8 @@
 \usepackage{fixme}
 \usepackage{subfig}
 
+\hypersetup{pdfborder=0 0 0} % remove red boxes from links [FIXME] Maybe remove it later?
+
 \newcommand\blankpage{%
     \null
     \thispagestyle{empty}%
@@ -40,10 +42,12 @@
 
 %Bibliography style
 \usepackage[square, numbers]{natbib}
-\bibliographystyle{abbrvnat}
 
 % Thesis title
-\newcommand{\PhDTitle}{Thesis title. It can extend over several lines (even 4 or 5)} 
+\newcommand{\PhDTitle}{Characterization of the HGCROC3 read-out chip for the future High Granularity
+Calorimeter, development of a new Machine Learning method for the Layer-1 trigger primitives
+calibration, and exploration of the ZZ/ZH→bbττ final state in the SM as well as in the high
+mass resonance spin-0 and spin-1 contexts} 
 
 % Name
 \newcommand{\PhDname}{FirstName LastName} 
@@ -87,10 +91,22 @@
 \begin{document}
 	% \doublespacing
 	% \input{layout/firstpage.tex}
-	\input{1.tex}
-	\input{2.tex}
-	\input{3.tex}
+        \tableofcontents
+        % Remember that the first page of table of contents should ALWAYS align to the right
+ 
+	% \input{Introduction.tex}
 
-        \input{Bib.tex}
-	% \section{Introduction}
+	% \input{1.tex}
+	% \input{2.tex}
+	\input{3.tex}
+	% \input{4.tex}
+	% \input{5.tex}
+	% \input{6.tex}
+
+	% \input{Conclusion.tex}
+
+        \bibliographystyle{unsrt} \bibliography{Bib.bib}
+        % \input{Bib.bib}
+        % \input{Bib.tex}
+
 \end{document}
