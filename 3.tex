@@ -370,25 +370,24 @@ The full scan of the pedestal trimming value is performed separately for each ha
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/Pedestal_0.pdf}
-    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/Pedestal_1.pdf}
+    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/Pedestal_Before.pdf}
+    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/Pedestal_After.pdf}
     \caption{Pedestal values of the HGCROC3 channels before (left) and after (right) the pedestal calibration procedure: channel numbers from 0 to 39 belong to the first half, channel numbers from 40 to 77 belong to the second half of the chip. The main target of the calibration is to reduce the dispersion between the channels and minimise their average.}
     \label{fig:Pedestal}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/Noise_0.pdf}
-    \includegraphics[width=0.49\linewidth]{Figures/HGCAL/Noise_1.pdf}
-    \caption{Noise values of the HGCROC3 channels before (left) and after (right) the pedestal calibration procedure: channel numbers from 0 to 39 belong to the first half, channel numbers from 40 to 77 belong to the second half of the chip. The pedestal calibration also aims at minimising the electronic noise of the channels.}
-    \label{fig:Noise}
-\end{figure}
-
 \begin{figure} 
     \centering
-    \includegraphics[width=0.7\linewidth]{Figures/HGCAL/PedestalScan.pdf}
+    \includegraphics[width=0.7\linewidth]{Figures/HGCAL/Pedestal_Scan.pdf}
     \caption{Pedestal values of the HGCROC3 channels as a function of the \texttt{Trim\_Inv} parameter, used for a channel-wise pedestal trimming.}
     \label{fig:PedestalScan}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.55\linewidth]{Figures/HGCAL/Noise_After.pdf}
+    \caption{Noise values of the HGCROC3 channels after the pedestal calibration procedure: channel numbers from 0 to 39 belong to the first half, channel numbers from 40 to 77 belong to the second half of the chip.}
+    \label{fig:Noise}
 \end{figure}
 
 Once each half shows a similar pedestal value in all channels, a \textit{global} pedestal trimming is performed to lower the pedestal value to approximately 10~ADC and fully exploit the 1~V digitisation range.
