@@ -184,7 +184,7 @@ The performance of the L1 calorimeter trigger in finding the objects candidate a
 The reader will understand, at this point, the considerable importance of Layer-1 calibration in building the L1 calorimeter trigger candidates. 
 Given the stacked architecture of Layer-1 and Layer-2, where the latter is fully dependent of the former's output, a better calibration of the TPs at Layer-1 can be crucial in improving the Layer-2 performance.
 
-\section{The current Layer-1 calibration}
+\section{The current Layer-1 calibration method}
 \label{sec:The current Layer-1 calibration}
 
 A first method to extract Layer-1 calibration factors was developed at the beginning of Run~II. 
@@ -244,38 +244,82 @@ These points have become particularly evident at the start of the Run~III data-t
 The optimization of ECAL, HCAL, and HF calibrations was performed, but in the case of HCAL and HF, the new correction factors did not pass the necessary validation and closure tests. 
 For this reason, for the Run~III data-taking, the choice was made to set HCAL and HF Layer-1 calibration factors to unity, thus removing the needed calibration.
 
-\section{The new Layer-1 calibration}
+\section{The new Layer-1 calibration method}
 
-A novel ML technique for the detector calibration has been developed for the extraction of Layer-1 calibration factors, with the goal of providing a first proof of concept of the ML-based calibration method in a field that is essential for the L1 Trigger system and could have large impact on the entire CMS detector performance.
-The ML-based approach aims to resolve some of the critical points coming from the current calibration technique mentioned in the previous section.
-
-The first improvement comes from a redefinition of the clusters defining the $e/\gamma$ and jet candidates. 
-According to the Layer-2 conventions for the hadronic jet candidates, the L1 cluster is defined, both for $e/\gamma$ and jet objects, as the $9\times9$ matrix of TTs composing the \textit{chunky donut} (CD). This choice ensures maximal containment of the hadronic shower, and minimal energy loss. This inclusive definition of the L1 cluster has revealed itself as a convenient approach for the calibration of jets, whilst the $e/\gamma$ cluster, initially defined as the same $9\times9$ TTs CD shape, has been subsequently revised to a smaller shape, in order to reduce the contamination from pile-up. 
-Moreover, in the new method no requirements are applied to the energy deposit in the central TP, allowing for different candidate shapes to enter the calibration process, expanding the effectiveness of the calibration to account for a wider range of possible shapes.
-
-The second improvement originates from the employment of ML-based algorithms to extract the calibration constants, removing the need for the current linear regression. 
-The capability of ML methods to consider all inputs inclusively during the training allows for a faster extrapolation of the calibration constants, without necessitating finite coarse energy bins. In principle, ML techniques do not require any categorisation of the input dataset, being able to learn from all data simultaneously and to interpolate the detector response even for objects that were not part of the input dataset. However, in this specific application, the calibration factors are constrained by the firmware compatibility, limiting the size of the energy bin to $\Delta E_T\geq0.5$~GeV.
-
-Finally, the method described in this Chapter is based on the possibility of extracting the calibration factors using either MC simulated events or data. In the first case, the calibration method benefits from a better definition of the true object energy at generator level, and from the simulation of the ideal environment of no pile-up, hardly achievable during ordinary data taking conditions. In the latter, the use of data presents more arduous conditions due to the inevitable contribution of pile-up, however it provides the most reliable representation of the latest detector response, with particular impact especially when considering low energy deposits.
+A novel ML technique for the detector calibration has been developed for the extraction of Layer-1 calibration factors, aiming to address some of the critical limitations related to the current calibration technique described in the previous section.
+This application provides a first proof of concept for the novel ML-based calibration method and offers insights into its potential future applications beyond the L1 Trigger context.
 
 \bigbreak
 
-The first implementation of the new Layer-1 calibration method has been based on a Neural Network (NN) approach, which I contributed in developing and improving. This first attempt is widely discussed in~\cite{Motta:2881939}, and reported in the next Section~\ref{sec:The Neural Network approach}, however it was found to have intrinsic limitations for the specific application of the calibration to the Layer-1 context. 
-As part of this Thesis work, I have also converted the NN method into a new algorithm based on differentiable programming, allowing for streamlined parameter optimisation and better integration of the Layer-1 calibration within the Layer-2 interface.
+The primary improvement introduced by the new method stems from the use of ML algorithms to derive calibration constants. Unlike traditional techniques that require the definition of a simplified parametric function to describe the energy response, the ML approach can handle complex, non-linear relationships, which are typically difficult to capture with conventional regression methods. 
+ML models can learn from large amount of data simultaneously and interpolate the detector response even for objects that were not included in the training dataset.
+Moreover, the capability of ML methods to incorporate multiple input variables allows for a faster extrapolation of the calibration constants, without necessitating finite, coarse energy bins. However, in this specific application, the calibration factors are constrained by firmware compatibility, necessitating a minimum energy bin size of $\Delta E_T\geq0.5$~GeV.
+
+The second improvement comes from a redefinition of the clusters defining the $e/\gamma$ and jet candidates. 
+According to the Layer-2 conventions for the hadronic jet candidates, the L1 cluster is defined, both for $e/\gamma$ and jet objects, as the $9\times9$ matrix of TTs composing the \textit{chunky donut} (CD). This choice ensures maximal containment of the hadronic shower, and minimal energy loss. This inclusive definition of the L1 cluster has revealed itself as a convenient approach for the calibration of jets, whilst the $e/\gamma$ cluster, initially defined as the same $9\times9$ TTs CD shape, has been subsequently revised to a smaller shape, in order to reduce the contamination from pile-up. 
+In the new method, no requirements are applied to the energy deposit in the central TP, allowing for different candidate shapes to enter the calibration process, expanding the effectiveness of the calibration to account for a wider range of possible shapes.
+
+Finally, the method described in this Chapter is based on the possibility of extracting the calibration factors using either MC simulated events or data. In the first case, the calibration method benefits from a better definition of the true object energy at generator level, and from the simulation of the ideal environment of no pile-up, hardly achievable during ordinary data taking conditions. In the latter, the use of data presents more arduous conditions due to the inevitable contribution of pile-up, however it provides the most reliable representation of the latest detector response, with continuously increasing training datasets as more data becomes available.
+The design and optimisation of the method is performed based on data collected by the CMS Experiment, with two separate samples for the derivation of the ECAL and HCAL/HF calibration constants.
+For the derivation of the ECAL calibration factor, the \texttt{EGamma} dataset is used, which is composed of events triggered by HLT paths requiring the presence of electron or photon candidates. For the derivation of the HCAL/HF calibration, the \texttt{JetMET} dataset is used, which is recorded by requiring the presence of jet or missing transverse energy candidates.
+
+\bigbreak
+
+The first implementation of the new Layer-1 calibration method was based on a Neural Network (NN) approach, which I contributed in developing and improving. This first attempt is widely discussed in~\cite{Motta:2881939}, and reported in the next Section~\ref{sec:The Neural Network approach}, however it was found to have intrinsic limitations for the specific application of the calibration to the Layer-1 context. 
+As part of this Thesis work, I have converted the NN method into a new algorithm based on differentiable programming, allowing for streamlined parameter optimisation and better compatibility of the Layer-1 calibration constants within the Layer-2 requirements.
 
 % The Trigger Primitives that used to build the Level-1 Trigger calorimeter objects (electron, photon, tau leptons, jets, etc.) are calibrated using the method described in Ref. \cite{CMS:2020cmk}. It consists in deriving calibration factors for the ECAL and Hadronic Calorimeter (HCAL) from single-photon (single-pions)
 % simulations. The calibration factors are extracted, in bins of $\eta$ and transverse energy, from the distribution of the calorimeter response, i.e. the ratio of the true particle energy (a photon or a pion) to the energy of a group of 3 (9) Trigger Primitives.\\
 
 \section{The Neural Network approach}
 \label{sec:The Neural Network approach}
-\subsection{Architecture}
-\subsection{Input processing}
-\subsection{Limitations}
 
-\section{The differentiable programming approach}
-\subsection{Discrete approach}
-\subsection{Input processing}
-\subsection{Training optimisation}
-\subsection{Performance evaluation}
+The first implementation of the new method for the extraction of Layer-1 calibration factors is based on a Neural Network (NN) approach. 
 
-\section{Future applications}
+\subsection{Basic concepts of Neural Networks}
+
+The main idea behind NNs is reproducing the neuronal organisation found in animal brains through software implementations~\cite{1672070}.
+
+The structural building blocks of NNs are artificial neurons, also known as \textit{perceptrons}, taking as input $n$-dimensional vectors of variables $(x_1,x_2,...,x_n)$. Each variable is multiplied by a different weight $w_i$ and summed together, adding a bias term $b$.
+The outcome of the summation is then fed into an activation function $f$, which can be either linear or non-linear, the latter option generally being preferred as the introduction of non-linearity enables the NN to capture arbitrarily complex relationships in data.
+Mathematically, each artificial neuron can be represented as a unit performing the following operation:
+\begin{equation}
+    \hat{y}=f\left( \sum_{i=1}^{n}w_i \cdot x_i + b \right)
+\end{equation}
+where $y$ represents the output of the neuron, and the process of feeding the inputs to a neuron is known as \textit{forward propagation}. A graphical illustration of the neuron can be found in Figure~\ref{FIXME}.
+
+In a typical NN architecture, neurons as arranged into layers, and each neuron in a layer receives inputs from the neurons in the preceding layer. 
+The structure of the NN is fully defined by the configuration of these layers and the number of neurons in each layer. A typical NN includes an input layer, multiple hidden layers, and an output layer, as illustrated in Figure~\ref{FIXME}.
+The output layer can produce one or multiple output values, depending on the specific problem being addressed. 
+At this stage, the NN is simply a sequence of neurons, taking as input a set of variables, and computing mathematical operations to generate the output. The degree of complexity of the NN function is directly related to its architecture: at a first approximation, the number of layers corresponds to the degree of the polynomial functions, while the number of neurons in each layer regulates the monomials of the same degree. 
+
+Once the NN architecture is defined, the goal is to adjust the NN weights in such a way that the prediction for the final output $y$ is as close as possible to the correct value. 
+In order to quantify the discrepancy between the NN prediction and the real quantities, different metrics can be adopted, generally referred to as \textit{loss functions}:
+\begin{equation}
+    L(w,b)=\frac{1}{N}\sum_{j=1}^N(y_j-\hat{y}_j)^2
+\end{equation}
+where $N$ is the number of input samples, $y_i$ is the truth value being learnt, and $\hat{y}_i$ is the predicted NN output.
+During the training process, the NN is fed 
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\linewidth]{Figures/L1TP/Perceptron.pdf}
+    \caption{Graphic illustration of an artificial neuron. An $n$-dimensional vector of variables is passed as input, and weights are applied to each element. The weighted vector is summed and added to a bias term, the sum is passed to a non-linear activation function $f$, which returns the output $y$.}
+    \label{fig:Perceptron}
+\end{figure}
+
+% \subsection{Input definition}
+% In the new ML-based method, the L1 objects are defined as a $9\times9$ matrix of TTs, and the Layer-1 raw energy of each candidate is defined as the sum of the $iE_T$ energy deposit in the 
+
+\subsection{The algorithm architecture and training} % 25/6 
+\subsection{Limitations of the Neural Network approach} % 26/6
+
+\section{The differentiable programming approach} % 26/6
+\subsection{A discrete approach} % 27/6
+\subsection{Input dataset and optimisation} % 28/6
+\subsection{Performance evaluation} % 28/6 
+
+\section{Future applications} % 29/6
+
+\section*{Summary} % 30/^ + introduction and revision
