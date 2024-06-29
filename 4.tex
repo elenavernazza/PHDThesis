@@ -263,10 +263,10 @@ Finally, the method described in this Chapter is based on the possibility of ext
 The design and optimisation of the method is performed based on data collected by the CMS Experiment, with two separate samples for the derivation of the ECAL and HCAL/HF calibration constants.
 For the derivation of the ECAL calibration factor, the \texttt{EGamma} dataset is used, which is composed of events triggered by HLT paths requiring the presence of electron or photon candidates. For the derivation of the HCAL/HF calibration, the \texttt{JetMET} dataset is used, which is recorded by requiring the presence of jet or missing transverse energy candidates.
 
-\bigbreak
+% \bigbreak
 
-The first implementation of the new Layer-1 calibration method was based on a Neural Network (NN) approach, which I contributed in developing and improving. This first attempt is widely discussed in~\cite{Motta:2881939}, and reported in the next Section~\ref{sec:The Neural Network approach}, however it was found to have intrinsic limitations for the specific application of the calibration to the Layer-1 context. 
-As part of this Thesis work, I have converted the NN method into a new algorithm based on differentiable programming, allowing for streamlined parameter optimisation and better compatibility of the Layer-1 calibration constants within the Layer-2 requirements.
+% The first implementation of the new Layer-1 calibration method was based on a Neural Network (NN) approach~\cite{Motta:2881939}, which I contributed in developing and optimising. This initial attempt is discussed in Section~\ref{sec:The Neural Network approach}, however it was found to have intrinsic limitations for the specific application of the calibration to the Layer-1 context. 
+% As part of this Thesis work, I have converted the NN method into a new algorithm based on differentiable programming, allowing for streamlined parameter optimisation and customisation of the Layer-1 calibration constants for a better compatibility with the Layer-2 requirements.
 
 % The Trigger Primitives that used to build the Level-1 Trigger calorimeter objects (electron, photon, tau leptons, jets, etc.) are calibrated using the method described in Ref. \cite{CMS:2020cmk}. It consists in deriving calibration factors for the ECAL and Hadronic Calorimeter (HCAL) from single-photon (single-pions)
 % simulations. The calibration factors are extracted, in bins of $\eta$ and transverse energy, from the distribution of the calorimeter response, i.e. the ratio of the true particle energy (a photon or a pion) to the energy of a group of 3 (9) Trigger Primitives.\\
@@ -274,33 +274,30 @@ As part of this Thesis work, I have converted the NN method into a new algorithm
 \section{The Neural Network approach}
 \label{sec:The Neural Network approach}
 
-The first implementation of the new method for the extraction of Layer-1 calibration factors is based on a Neural Network (NN) approach. 
+The first implementation of the new method for the extraction of Layer-1 calibration factors is based on a NN approach, which I contributed in developing and optimising.
+The idea behind this first implementation is to exploit innovative and widely employed software techniques to bypass the drawbacks of the standard linear regression method, taking advantage of the ability of NNs to model complex, non-linear relationships and to efficiently handle large datasets.
+Moreover, the NN approach entirely removes the need for arbitrary choice of energy binning to perform fits and can learn about possible correlations between the different TTs composing the L1 candidate.
+
+The input to the NN is the raw energy deposit $E_T$ and $i\eta$ position of each TT composing the $9\times9$ L1 candidate.
+The goal of the NN approach is learning to predict the best calibration factors to be applied to each TT so that the calibrated L1 energy is as close as possible to the reference value, defined as the energy of the reconstructed object:
+
+\begin{equation}
+    E_T^{\,L1,\;jet} = \sum_{i\eta,\:i\phi}\left(\;\alpha\,(i\eta,E_{T})\;\cdot\;E_{T}\;\right) 
+    \;\longrightarrow\;
+    E_T^{\:Reco,\;jet}
+\end{equation}
+where $E_T^{\,L1,\;jet}$ is the calibrated L1 energy, $\alpha\,(i\eta,E_{T})$ are the calibration factors, depending on the $E_T$ energy deposit and $i\eta$ position of the TT, and $E_T^{\:Reco,\;jet}$ is the energy of the reconstructed object.
 
 \subsection{Basic concepts of Neural Networks}
 
 The main idea behind NNs is reproducing the neuronal organisation found in animal brains through software implementations~\cite{1672070}.
-
 The structural building blocks of NNs are artificial neurons, also known as \textit{perceptrons}, taking as input $n$-dimensional vectors of variables $(x_1,x_2,...,x_n)$. Each variable is multiplied by a different weight $w_i$ and summed together, adding a bias term $b$.
 The outcome of the summation is then fed into an activation function $f$, which can be either linear or non-linear, the latter option generally being preferred as the introduction of non-linearity enables the NN to capture arbitrarily complex relationships in data.
 Mathematically, each artificial neuron can be represented as a unit performing the following operation:
 \begin{equation}
     \hat{y}=f\left( \sum_{i=1}^{n}w_i \cdot x_i + b \right)
 \end{equation}
-where $y$ represents the output of the neuron, and the process of feeding the inputs to a neuron is known as \textit{forward propagation}. A graphical illustration of the neuron can be found in Figure~\ref{FIXME}.
-
-In a typical NN architecture, neurons as arranged into layers, and each neuron in a layer receives inputs from the neurons in the preceding layer. 
-The structure of the NN is fully defined by the configuration of these layers and the number of neurons in each layer. A typical NN includes an input layer, multiple hidden layers, and an output layer, as illustrated in Figure~\ref{FIXME}.
-The output layer can produce one or multiple output values, depending on the specific problem being addressed. 
-At this stage, the NN is simply a sequence of neurons, taking as input a set of variables, and computing mathematical operations to generate the output. The degree of complexity of the NN function is directly related to its architecture: at a first approximation, the number of layers corresponds to the degree of the polynomial functions, while the number of neurons in each layer regulates the monomials of the same degree. 
-
-Once the NN architecture is defined, the goal is to adjust the NN weights in such a way that the prediction for the final output $y$ is as close as possible to the correct value. 
-In order to quantify the discrepancy between the NN prediction and the real quantities, different metrics can be adopted, generally referred to as \textit{loss functions}:
-\begin{equation}
-    L(w,b)=\frac{1}{N}\sum_{j=1}^N(y_j-\hat{y}_j)^2
-\end{equation}
-where $N$ is the number of input samples, $y_i$ is the truth value being learnt, and $\hat{y}_i$ is the predicted NN output.
-During the training process, the NN is fed 
-
+where $\hat{y}$ represents the output of the neuron, and the process of feeding the inputs to a neuron is known as \textit{forward propagation}. A graphical illustration of the neuron can be found in Figure~\ref{fig:Perceptron}.
 
 \begin{figure}
     \centering
@@ -309,17 +306,287 @@ During the training process, the NN is fed
     \label{fig:Perceptron}
 \end{figure}
 
+In a typical NN architecture, neurons are arranged into layers, and each neuron in a layer receives inputs from the neurons in the preceding layer. 
+The structure of the NN is fully defined by the configuration of these layers and the number of neurons in each layer. A typical NN includes an input layer, multiple hidden layers, and an output layer, as illustrated in Figure~\ref{FIXME}.
+% The output layer can produce one or multiple output values, depending on the specific problem being addressed. 
+At this stage, the NN is simply a sequence of neurons, taking as input a set of variables, and computing mathematical operations to generate the output. The degree of complexity of the NN function is directly related to its architecture: at a first approximation, the number of layers corresponds to the degree of the polynomial functions, while the number of neurons in each layer regulates the monomials of the same degree. 
+
+Once the NN architecture is defined, the goal is to adjust the NN weights in such a way that the prediction for the final output $\hat{y}$ is as close as possible to the truth value. 
+In order to quantify the discrepancy between the NN prediction and the real quantities, different metrics can be adopted, generally referred to as \textit{loss functions}:
+\begin{equation}
+    L(w,b)=\frac{1}{N}\sum_{j=1}^N(y_j-\hat{y}_j)^2
+\end{equation}
+where $N$ is the number of input samples, $y_i$ is the truth value being learnt, and $\hat{y}_i$ is the predicted NN output.
+The minimization of the loss function, also known as \textit{training}, is achieved by feeding the NN with a dataset where the truth value $y_i$ of the target variables are already known.
+During the training process, the loss function is derived with respect to the weights, and the trainable parameters are progressively updated in the opposite direction to the gradient, thus guiding the NN weights to values that minimise the loss. The procedure of updating the weights following the loss gradient is usually referred to as \textit{backward propagation}, and can be tuned by a learning rate parameter defining the magnitude of the parameter variation during each training iteration. A small learning rate leads to slow convergence and risks getting the NN trapped in local minima, whereas a large learning rate can cause the process to overshoot the optimal weights, resulting in instability and divergence.
+
+After initialising the weights to random values, the process of training a NN model is constituted by an iterative repetition of the following steps, until convergence:
+\begin{itemize}
+    \item Evaluate the loss function with the current set of weights, $W$ (\textit{forward propagation});
+    \item Compute the gradient of the loss function with respect to the set of weights, $\partial L/\partial W$;
+    \item Update the weights in the opposite direction to the gradient, with a step proportional to the learning rate, $W = W - (\partial L/\partial W \times LR)$ (\textit{backward propagation}).
+\end{itemize}
+A schematic overview of a typical NN architecture and its training process is reported in Figure~\ref{fig:Architecture}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{Figures/L1TP/Architecture.pdf}
+    \caption{Schematic representation of a typical Neural Network (NN) architecture, alongside its basic training steps. The input data is fed to the NN, which processes it in the forward propagation to give a prediction; the loss function is computed, encoding the discrepancy between prediction and truth values; in the backward propagation, the loss is derived and the trainable parameters are updated according to an optimizer that minimizes the loss function.}
+    \label{fig:Architecture}
+\end{figure}
+
 % \subsection{Input definition}
 % In the new ML-based method, the L1 objects are defined as a $9\times9$ matrix of TTs, and the Layer-1 raw energy of each candidate is defined as the sum of the $iE_T$ energy deposit in the 
 
-\subsection{The algorithm architecture and training} % 25/6 
-\subsection{Limitations of the Neural Network approach} % 26/6
+\subsection{The algorithm architecture and training} 
 
-\section{The differentiable programming approach} % 26/6
-\subsection{A discrete approach} % 27/6
-\subsection{Input dataset and optimisation} % 28/6
-\subsection{Performance evaluation} % 28/6 
+The NN designed for the Layer-1 TTs calibration is based on a custom architecture, in order to handle the input features coming from the position and raw energy of the TTs composing the $9\times9$ CD, and extract the predicted calibrated energy of the L1 candidate.
 
-\section{Future applications} % 29/6
+% architecture
+A schematics of the NN architecture is reported in Figure~\ref{fig:TTP}.
+The basic building block of the NN architecture is the Trigger Tower Predictor (TTP), a stand-alone network, which takes as input the energy deposit and $i\eta$ position of a single TT and extracts the predicted calibrated TT energy.
+The TTP is structured as a fully connected layer with 84 neurons, a hidden layer with 256 neurons, and one single-neuron output layer. All neurons make use of the Rectified Linear Unit (ReLU)~\cite{4082265} activation function, and the bias parameter is inhibited in order to avoid propagating the information of empty TTs.
+In order to simulate the Layer-1 firmware algorithm, which is based on the transmission of 8-bit words with discrete values for TT the energy deposit, a custom layer is applied to the output of the TTP, flooring the output of the previous layer in units of $iET$ (i.e. 0.5~GeV precision).
+The TTP is cloned 81 times, to reproduce the $9\times9$ array of TTs, with each clone sharing the same trainable parameters.
+The outputs of the 81 TTP clones are then summed together in a non-trainable \textit{summation layer}, to obtain the predicted calibrated L1 candidate energy.
 
-\section*{Summary} % 30/^ + introduction and revision
+\bigbreak
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{Figures/L1TP/TTP.pdf}
+    \caption{Schematic view of the NN architecture. The basic component is the Trigger Tower Predictor (TTP), a stand-alone NN, which takes as input the energy deposit and $i\eta$ position of a single TT and extracts the predicted calibrated TT energy. The TTP is cloned 81 times, and the outputs are summed together in the summation layer, to extract the predicted calibrated L1 candidate energy.}
+    \label{fig:TTP}
+\end{figure}
+
+% Training
+Once the NN architecture has been defined, the training is performed by minimising a custom loss function, containing three different terms:
+\begin{itemize}
+    \item \textit{Regression term}: it evaluates the distance between the predicted L1 calibrated energy, at the output from the summation layer, and the target offline energy of the matched object, by using the Mean Absolute Percentage Error (MAPE) function.
+    \item \textit{Regularisation term}: it is computed as the squared sum of all the network’s weights and maintains the trainable parameters small, in order to avoid neuron subset over-training.
+    \item \textit{Rate term}: it is a penalty term based on the evaluation of the L1 rate proxy, with the effect of maintaining the estimated L1 rate close to the current level.
+\end{itemize}
+Each term is regulated by a multiplication factor, considered as a NN \textit{hyper-parameter}, that can be varied to adjust the relative importance of each term to optimise the NN performance. The loss function is mathematically expressed as:
+\begin{equation}
+L = 
+A\cdot\left|\frac{E_T^{L1,\;jet} - E_T^{Reco,\;jet}}{E_T^{Reco,\;jet}}\right|
+\;+\;
+B\cdot\sum_iw_i^2
+\;+\;
+C\cdot\cosh\left(D\cdot\frac{R_{proxy} - R_{target}}{R_{target}}\:\right)
+\end{equation}
+where $E_T^{\:L1,\;jet}$ and $E_T^{\:Reco,\;jet}$ are the energy of the calibrated L1 candidate and of the offline object respectively, $w_i$ is the NN trainable parameter, and $R_{target}$ and $R_{proxy}$ are the estimate for the rate proxy obtained by applying either the current or the newly trained Layer-1 calibration factors.
+
+The rate term was introduced at a second iteration of the NN architecture implementation, to cope with L1 trigger rate increase. In principle, a better calibration of Layer-1 TTs translates in a more precise application of energy thresholds, and a better management of the final rate; however, with the sole information of the TTs raw energy deposit, it is hard to correctly discriminate the energy contribution coming from pile-up, and a good calibration of physics objects also tends to enhance the energy of pile-up jets, causing a steep rise in the L1 trigger rate.
+The structure of the NN was modified in such a way to receive as input at the same time the L1 candidates from electron an jet signals, and the L1 candidates from zero bias events, the former being employed for the energy regression of the offline objects $E_T$ and the latter for evaluating a rate proxy $R$.
+The rate proxy is estimated for jets as the ratio of $9\times9$ CD candidates with a total calibrated energy above 50~GeV, while for $e/\gamma$ it is given by the number of candidates with a recorded seed energy deposit larger than 25~GeV and $H/E$ energy fraction smaller than $2^{-3}$ or $2^{-4}$ for barrel and endcap respectively:
+\begin{equation}
+    R_{jet} = \frac{\#~\textnormal{Jets with }E_T^{L1,\;jet} > 50~\textnormal{GeV}}{\#~\textnormal{Jets}}
+\end{equation}
+\begin{equation}
+    R_{e/\gamma} = \frac{\#~e/\gamma~\textnormal{having seed with }E_T > 25~\textnormal{GeV}~\&~H/E < 2^{-3(-4)}}{\#~e/\gamma}
+\end{equation}
+Given the large size of low energy L1 candidates in the zero-bias dataset, the input for the rate proxy estimation is preliminarily reduced by applying a cut on the transverse momentum of the offline objects matched to the L1 candidate, requiring $p_T>15$~GeV for both $e/\gamma$ and jets.
+To further accelerate the training time, the training is distributed on four NVIDIA Tesla V100 Tensor Core GPUs~\cite{NVIDIAgpu}. 
+% problem with the rate: the input is preselected, but there might be new clusters appearing as we increase the SFs
+
+\bigbreak
+
+Two separate training procedures are performed to extract ECAL and HCAL calibration factors. For the ECAL Layer-1 calibration factors, the training dataset is composed of electrons originating from the Z boson decay, satisfying the requirement $|\eta| < 3.0$, and having an electromagnetic energy deposit fraction larger than $95\%$.
+For the HCAL Layer-1 calibration factors, the training dataset is composed of jets identified with the PileUp Per Particle (PUPPI) algorithm~\cite{PUPPI_2014}, having pseudorapidity value $|\eta| < 5.1$, transverse momentum $p_T>30$~GeV, and a hadronic energy deposit fraction larger than $80\%$.
+In both cases, the $9\times9$ CD matrix is built around the TT with the smallest angular distance from the offline reconstructed object, and only the events having an uncalibrated response close to unity are selected:
+\begin{equation}
+    0.3 < \frac{E_T^{L1,\;jet}}{E_T^{L1,\;Reco}} < 3.0
+\end{equation}
+to prevent the NN from learning features of a small fraction of problematic outliers.
+The input dataset is divided into training (80\%) and testing (20\%) datasets, to control the potential overfitting of the model.
+An \textit{Adam} minimiser~\cite{ADAM_2017} with $10^{-3}$ learning rate is chosen for the NN training.
+
+% To ensure that the $i\eta$ coordinate is interpreted as a discrete variable, a categorical \textit{one-hot encoding} is performed: this technique converts a discrete quantity into a binary vector, with a length equal to the number of unique values, in this case the 41 $i\eta$ positions, which is filled with 0 in each position, except for only single bit stored to 1 corresponding to the specific value of the quantity.
+
+\subsection{Calibration factors and performance}
+
+% Scale factors extraction
+The calibration factors are extracted through a \textit{standard candle} approach, by inputting to the trained TTP a standard candle TT, with fixed energy and position. The calibration factor is defined as the ratio between the predicted tower energy and the input raw energy:
+\begin{equation}
+    \alpha\,(i\eta,E_{T}) = \frac{i\hat{E}_T}{iE_T} = \frac{\textnormal{TTP}(i\eta,iE_T)}{iE_T}
+\end{equation}
+where $i\eta$ and $iE_T$ are the position and energy deposit of the standard candle TT, and $i\hat{E}_T$ is the TT energy deposit predicted by the TTP.
+While the choice for the $i\eta$ position binning is fixed by the detector geometry, the choice for the energy binning is arbitrary, since the NN does not assume any binning or discreteness in the energy by construction. 
+
+The calibration factors extracted by the NN approach, and compared to the current approach, are reported in Figure~\ref{fig:ECALSFs_NN}-\ref{fig:HCALSFs_NN}-\ref{fig:HFSFs_NN} for the ECAL, HCAL and HF TTs respectively, as a function of the $i\eta$ position and the energy.
+The new NN-based approach is capable of providing a much higher granularity in the energy dimension, extracting through a single training process a total of 2,800 calibration factors for ECAL, and 4,100 for HCAL and HF: the calibration factors are derived in energy bins of 2~$iE_T$, up to a maximum value of $iE_T=100$~GeV, after which one single energy bin is considered. 
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_ECAL_before.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_ECAL_now.pdf}}
+    \caption{}
+    \label{fig:ECALSFs_NN}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_HCAL_before.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_HCAL_now.pdf}}
+    \caption{}
+    \label{fig:HCALSFs_NN}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_HF_before.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_HF_now.pdf}}
+    \caption{}
+    \label{fig:HFSFs_NN}
+\end{figure}
+
+In the case of ECAL, the calibration factors are close to unity, with a slight suppression of TTs in the barrel recording low energy deposit, and a visible enhancement of TTs in the endcap. A discontinuity is noticeable for the region corresponding to $i\eta=18$, already present in the previous configuration of calibration factors: this region marks the transition from barrel to endcap, as shown in Figure~\ref{fig:Layer1}, where the depth of the ECAL crystals is reduced and a smaller energy deposit needs to be compensated by higher calibration factors. The six suppressed low energy towers corresponding to $i\eta=26,27,28$ are manually constrained to 0 in the extracted LUT, following Layer-1 recommendations, to reduce the impact of the most forward ECAL TTs, significantly affected by radiation damage.
+
+In the case of HCAL, the calibration factors generally show larger values, especially for low energy TTs and in the region around $i\eta=17$, where the depth of HCAL crystals is reduced by the geometry of the detector. In the HF compartment, the newly derived calibration factors 
+present a change with respect to the previous configuration, showing a tendency to suppress the TTs raw energy, by applying factors below unity. While the previous method was based on MC samples produced in the ideal environment of no pile-up, the NN is trained on real data, where the pile-up effect, which is predominant in the HF region, contaminates the L1 candidate: the NN learns how to suppress the additional energy contribution coming from pile-up and results in lower calibration factors across the HF region.
+
+\bigbreak
+
+% performance
+The performance of the newly derived Layer-1 calibration factors can be evaluated by replicating the Layer-1 firmware implemented in the hardware of the CMS service cavern with the new LUTs. A dataset collected by the CMS experiment during Run~III data taking is re-emulated under three different Layer-1 configurations: one in which no calibration is applied (\textit{No calibration}), one in which the calibration factors are set to the values obtained with the old method (\textit{Old calibration}), and one in which the calibration constants are derived with the NN approach presented in this section (\textit{New calibration}).
+The three configurations are compared in terms of Layer-1 energy response, defined as the ratio between the L1 $e/\gamma$ or jet candidate energy and the offline reconstructed electron of PUPPI jet energy. From the differential distribution of the Layer-1 energy response, the mean of the distribution defines the energy scale, which is expected to be as close as possible to unity, while the ratio between the standard deviation and the mean defines the energy resolution, which needs to be minimised for a performance improvement.
+However, the resolution is only a partial aspect of the Layer-1 trigger performance, which has to be evaluated in terms of expected rate and efficiency. A commonly used figure of merit for the L1 performance evaluation is the efficiency turn-on curve, which describes, for a given L1-$p_T$ threshold, the efficiency in detecting and reconstructing the L1 candidates that are correctly matched to offline candidates with the same energy. The efficiency turn-on curve is computed as the ratio between offline-$p_T$ distribution of the objects matched to a L1 candidate passing the L1-$p_T$ threshold and the offline-$p_T$ distribution of all offline objects. 
+Ideally, the efficiency turn-on curve should be centered around the L1-$p_T$ threshold, with minimum efficiency for objects below the thresholds and maximum efficiency above the threshold. 
+In reality, the definition of the L1 energy is not always accurate, given the reduced information available, and can be either under-estimated or over-estimated, leading potential inefficiencies or false positives and resulting in a less steep turn-on curve.
+To account for differences in the rate and ensure a fair comparison of the different methods, the efficiency turn-on curves computed for L1-$p_T$ thresholds providing the same Layer-1 rate are compared to each other.
+
+\bigbreak
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/response_inclusive__ele.pdf}}
+    
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/resolution_ptBins__ele.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/scale_ptBins__ele.pdf}}
+    \caption{}
+    \label{fig:NN_ECAL_Response}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/rate_ObjEr2p5__ele.pdf}}
+    
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/turnon_fixedObjRateEr2p5_12__ele.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/turnon_fixedObjRateEr2p5_20__ele.pdf}}
+    \caption{}
+    \label{fig:NN_ECAL_TurnOn}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/response_inclusive__jet.pdf}}
+    
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/resolution_ptBins__jet.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/scale_ptBins__jet.pdf}}
+    \caption{}
+    \label{fig:NN_HCAL_Response}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/rate_ObjEr2p5__jet.pdf}}
+    
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/turnon_fixedObjRateEr2p5_40__jet.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/turnon_fixedObjRateEr2p5_60__jet.pdf}}
+    \caption{}
+    \label{fig:NN_HCAL_TurnOn_ER2p5}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/rate_Obj__jet.pdf}}
+    
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/turnon_fixedObjRate_60__jet.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/turnon_fixedObjRate_80__jet.pdf}}
+    \caption{}
+    \label{fig:NN_HCAL_TurnOn}
+\end{figure}
+
+The ECAL performance is shown in terms of inclusive response, resolution and scale in Figure~\ref{fig:NN_ECAL_Response}. The new NN approach provides a narrower, better centred distribution of the L1 energy response for $e/\gamma$, the resolution is consistently improved across the majority of the $p_T$ range, and the scale is closer to unity. The corresponding Layer-1 expected rate, so as the efficiency turn-on curves for two exemplary fixed rate values are represented in Figure~\ref{fig:NN_ECAL_TurnOn}: the new calibration ensured sharper turn-on curves compared to the old calibration in the low $p_T$ range, while the performance is comparable, or slightly reduced, in the high $p_T$ range.
+
+The HCAL performance of the new NN approach is compared to the other configurations in Figure~\ref{fig:NN_HCAL_Response}, in terms of L1 jet energy response, resolution and scale. The distribution of the response shows comparable performance of the new NN-based scale factors with respect to the other methods: the right tail at higher response is reduced, however there is no significant improvement in terms of resolution or scale. In particular, the reduced scale is driven by the rate term in the loss function, whose relative importance has been optimised in order to provide the optimal efficiency turn-on curve. Figures~\ref{fig:NN_HCAL_TurnOn_ER2p5} and \ref{fig:NN_HCAL_TurnOn} show a performance comparison of the three configurations in terms of rate and efficiency turn-on curves for the inclusive detector response and for the restricted case of $|\eta|<2.5$, where the latter is of particular interest for the L1 trigger performance since a vast number of trigger seeds only consider this pseudorapidity region, less affected by the pile-up activity.
+The efficiency turn-on curves show an impressive improvement coming from the NN approach, with reduced rate and better centred turn-on curves: this result is mainly driven by the impact of the new calibration factors on the rate rather than an improvement on the resolution, which is comparable to the old method.
+
+\subsection{Limitations of the Neural Network approach} % 30/6 - morning
+% model interpretability
+% customisability
+
+The performance presented for the NN approach are the result of a careful optimisation of the NN hyper-parameters, conducted by scanning different values for the loss parameters and for the definition of the network architecture. Figure~\ref{fig:NN_HyperParameters} shows the effect of different values of the parameters $C$ and $D$ in the loss function, 
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.4\linewidth]{Figures/L1TP/NN_ParameterC.pdf}}
+    \hspace{1cm}
+    \subfloat[]{\includegraphics[width=0.4\linewidth]{Figures/L1TP/NN_ParameterD.pdf}}
+    \caption{}
+    \label{fig:NN_HyperParameters}
+\end{figure}
+
+\newpage
+
+\section{The differentiable programming approach} % 30/6 - afternoon
+% \subsection{A discrete approach} 
+\subsection{Input dataset and optimisation} % 30/6 - afternoon
+
+
+\subsection{Calibration factors and performance} % 30/6 - night
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/response_inclusive__ele.pdf}}
+    
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/resolution_ptBins__ele.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/scale_ptBins__ele.pdf}}
+    \caption{}
+    \label{fig:JAX_ECAL_Response}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/rate_ObjEr2p5__ele.pdf}}
+    
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/turnon_fixedObjRateEr2p5_12__ele.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/turnon_fixedObjRateEr2p5_40__jet.pdf}}
+    \caption{}
+    \label{fig:JAX_ECAL_TurnOn}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/response_inclusive__jet.pdf}}
+    
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/resolution_ptBins__jet.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/scale_ptBins__jet.pdf}}
+    \caption{}
+    \label{fig:JAX_HCAL_Response}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/rate_Obj__jet.pdf}}
+    
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/turnon_fixedObjRate_60__jet.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/turnon_fixedObjRate_80__jet.pdf}}
+    \caption{}
+    \label{fig:JAX_HCAL_TurnOn}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/rate_ObjEr2p5__jet.pdf}}
+    
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/turnon_fixedObjRateEr2p5_40__jet.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/turnon_fixedObjRateEr2p5_60__jet.pdf}}
+    \caption{}
+    \label{fig:JAX_HCAL_TurnOn_Er2p5}
+\end{figure}
+
+\section{Future applications} % 1/7
+
+\section*{Summary} % 1/7 + introduction and revision
