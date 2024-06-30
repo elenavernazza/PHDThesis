@@ -285,6 +285,7 @@ The goal of the NN approach is learning to predict the best calibration factors 
     E_T^{\,L1,\;jet} = \sum_{i\eta,\:i\phi}\left(\;\alpha\,(i\eta,E_{T})\;\cdot\;E_{T}\;\right) 
     \;\longrightarrow\;
     E_T^{\:Reco,\;jet}
+\label{{eq:Training}}
 \end{equation}
 where $E_T^{\,L1,\;jet}$ is the calibrated L1 energy, $\alpha\,(i\eta,E_{T})$ are the calibration factors, depending on the $E_T$ energy deposit and $i\eta$ position of the TT, and $E_T^{\:Reco,\;jet}$ is the energy of the reconstructed object.
 
@@ -307,7 +308,7 @@ where $\hat{y}$ represents the output of the neuron, and the process of feeding 
 \end{figure}
 
 In a typical NN architecture, neurons are arranged into layers, and each neuron in a layer receives inputs from the neurons in the preceding layer. 
-The structure of the NN is fully defined by the configuration of these layers and the number of neurons in each layer. A typical NN includes an input layer, multiple hidden layers, and an output layer, as illustrated in Figure~\ref{FIXME}.
+The structure of the NN is fully defined by the configuration of these layers and the number of neurons in each layer. A typical NN includes an input layer, multiple hidden layers, and an output layer, as illustrated in Figure~\ref{fig:Architecture}.
 % The output layer can produce one or multiple output values, depending on the specific problem being addressed. 
 At this stage, the NN is simply a sequence of neurons, taking as input a set of variables, and computing mathematical operations to generate the output. The degree of complexity of the NN function is directly related to its architecture: at a first approximation, the number of layers corresponds to the degree of the polynomial functions, while the number of neurons in each layer regulates the monomials of the same degree. 
 
@@ -338,7 +339,7 @@ A schematic overview of a typical NN architecture and its training process is re
 % \subsection{Input definition}
 % In the new ML-based method, the L1 objects are defined as a $9\times9$ matrix of TTs, and the Layer-1 raw energy of each candidate is defined as the sum of the $iE_T$ energy deposit in the 
 
-\subsection{The algorithm architecture and training} 
+\subsection{The algorithm architecture and training procedure} 
 
 The NN designed for the Layer-1 TTs calibration is based on a custom architecture, in order to handle the input features coming from the position and raw energy of the TTs composing the $9\times9$ CD, and extract the predicted calibrated energy of the L1 candidate.
 
@@ -404,7 +405,7 @@ An \textit{Adam} minimiser~\cite{ADAM_2017} with $10^{-3}$ learning rate is chos
 
 % To ensure that the $i\eta$ coordinate is interpreted as a discrete variable, a categorical \textit{one-hot encoding} is performed: this technique converts a discrete quantity into a binary vector, with a length equal to the number of unique values, in this case the 41 $i\eta$ positions, which is filled with 0 in each position, except for only single bit stored to 1 corresponding to the specific value of the quantity.
 
-\subsection{Calibration factors and performance}
+\subsection{Calibration factors and Layer-1 performance}
 
 % Scale factors extraction
 The calibration factors are extracted through a \textit{standard candle} approach, by inputting to the trained TTP a standard candle TT, with fixed energy and position. The calibration factor is defined as the ratio between the predicted tower energy and the input raw energy:
@@ -414,32 +415,24 @@ The calibration factors are extracted through a \textit{standard candle} approac
 where $i\eta$ and $iE_T$ are the position and energy deposit of the standard candle TT, and $i\hat{E}_T$ is the TT energy deposit predicted by the TTP.
 While the choice for the $i\eta$ position binning is fixed by the detector geometry, the choice for the energy binning is arbitrary, since the NN does not assume any binning or discreteness in the energy by construction. 
 
-The calibration factors extracted by the NN approach, and compared to the current approach, are reported in Figure~\ref{fig:ECALSFs_NN}-\ref{fig:HCALSFs_NN}-\ref{fig:HFSFs_NN} for the ECAL, HCAL and HF TTs respectively, as a function of the $i\eta$ position and the energy.
-The new NN-based approach is capable of providing a much higher granularity in the energy dimension, extracting through a single training process a total of 2,800 calibration factors for ECAL, and 4,100 for HCAL and HF: the calibration factors are derived in energy bins of 2~$iE_T$, up to a maximum value of $iE_T=100$~GeV, after which one single energy bin is considered. 
-
 \begin{figure}
     \centering
-    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_ECAL_before.pdf}}
-    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_ECAL_now.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_2D_ECAL_Thesis.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_2D_ECAL_Thesis_NN.pdf}}
     \caption{}
     \label{fig:ECALSFs_NN}
 \end{figure}
 
 \begin{figure}
     \centering
-    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_HCAL_before.pdf}}
-    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_HCAL_now.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_2D_HCAL_Thesis.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_2D_HCAL_Thesis_NN.pdf}}
     \caption{}
     \label{fig:HCALSFs_NN}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_HF_before.pdf}}
-    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_HF_now.pdf}}
-    \caption{}
-    \label{fig:HFSFs_NN}
-\end{figure}
+The calibration factors extracted by the NN approach, and compared to the current approach, are reported in Figure~\ref{fig:ECALSFs_NN}-\ref{fig:HCALSFs_NN} for the ECAL and HCAL TTs respectively, as a function of the $i\eta$ position and the energy.
+The new NN-based approach is capable of providing a much higher granularity in the energy dimension, extracting through a single training process a total of 2,800 calibration factors for ECAL, and 4,100 for HCAL and HF: the calibration factors are derived in energy bins of 2~$iE_T$, up to a maximum value of $iE_T=100$~GeV, after which one single energy bin is considered. 
 
 In the case of ECAL, the calibration factors are close to unity, with a slight suppression of TTs in the barrel recording low energy deposit, and a visible enhancement of TTs in the endcap. A discontinuity is noticeable for the region corresponding to $i\eta=18$, already present in the previous configuration of calibration factors: this region marks the transition from barrel to endcap, as shown in Figure~\ref{fig:Layer1}, where the depth of the ECAL crystals is reduced and a smaller energy deposit needs to be compensated by higher calibration factors. The six suppressed low energy towers corresponding to $i\eta=26,27,28$ are manually constrained to 0 in the extracted LUT, following Layer-1 recommendations, to reduce the impact of the most forward ECAL TTs, significantly affected by radiation damage.
 
@@ -513,11 +506,9 @@ The ECAL performance is shown in terms of inclusive response, resolution and sca
 The HCAL performance of the new NN approach is compared to the other configurations in Figure~\ref{fig:NN_HCAL_Response}, in terms of L1 jet energy response, resolution and scale. The distribution of the response shows comparable performance of the new NN-based scale factors with respect to the other methods: the right tail at higher response is reduced, however there is no significant improvement in terms of resolution or scale. In particular, the reduced scale is driven by the rate term in the loss function, whose relative importance has been optimised in order to provide the optimal efficiency turn-on curve. Figures~\ref{fig:NN_HCAL_TurnOn_ER2p5} and \ref{fig:NN_HCAL_TurnOn} show a performance comparison of the three configurations in terms of rate and efficiency turn-on curves for the inclusive detector response and for the restricted case of $|\eta|<2.5$, where the latter is of particular interest for the L1 trigger performance since a vast number of trigger seeds only consider this pseudorapidity region, less affected by the pile-up activity.
 The efficiency turn-on curves show an impressive improvement coming from the NN approach, with reduced rate and better centred turn-on curves: this result is mainly driven by the impact of the new calibration factors on the rate rather than an improvement on the resolution, which is comparable to the old method.
 
-\subsection{Limitations of the Neural Network approach} % 30/6 - morning
-% model interpretability
-% customisability
+\bigbreak
 
-The performance presented for the NN approach are the result of a careful optimisation of the NN hyper-parameters, conducted by scanning different values for the loss parameters and for the definition of the network architecture. Figure~\ref{fig:NN_HyperParameters} shows the effect of different values of the parameters $C$ and $D$ in the loss function, 
+The performance presented for the NN approach are the result of a careful optimisation of the NN hyper-parameters, conducted by scanning different values for the loss parameters and for the definition of the network architecture. Figure~\ref{fig:NN_HyperParameters} shows the effect of a variation of $C$ and $D$ parameters in the loss function, regulating the importance of the rate term: the results clearly show the competitive effect between a better resolution and a lower rate. Among the different configurations, the one providing the best efficiency turn-on curve is preferred.
 
 \begin{figure}
     \centering
@@ -528,14 +519,116 @@ The performance presented for the NN approach are the result of a careful optimi
     \label{fig:NN_HyperParameters}
 \end{figure}
 
-\newpage
+\subsection{Limitations of the Neural Network approach}
 
-\section{The differentiable programming approach} % 30/6 - afternoon
-% \subsection{A discrete approach} 
-\subsection{Input dataset and optimisation} % 30/6 - afternoon
+Once the new calibration factors have been extracted, and their performance has been evaluated at Layer-1 and compared to the previous method, the final validation of the Layer-1 configuration must be conducted on Layer-2 objects. 
+As detailed in Section~\ref{subsec:The Layer-2 calorimeter objects}, the definition of Layer-2 trigger candidates is performed differently for electrons, hadronic tau leptons, jets, and energy sums, and given the stacked architecture of Layer-1 and Layer-2, changes in the Layer-1 configuration necessitate a re-optimisation of the Layer-2 calibration method. 
+In the L1 Trigger community, the Layer-2 objects calibration is performed by dedicated groups and involves the expertise of several specialists; therefore, the new Layer-1 configuration has been preliminarily studied at Layer-2 on hadronic tau leptons, whose calibration is based on a complex procedure and provides a comprehensive validation for both ECAL and HCAL components.
 
+The results of the Layer-2 performance for the new Layer-1 calibration factors obtained through the NN approach are presented in Figure~\ref{fig:NN_Layer2}~(a), in terms of efficiency turn-on curves, for the current (red) and the new (blue) Layer-1 and Layer-2 calibration. The combination of the new NN-based Layer-1 calibration and the Layer-2 re-optimisation results in a less sharp efficiency turn-on curve compared to the current configuration. 
+This indicates that the improvement observed at Layer-1 does not directly translate into better Layer-2 performance. The primary reason for this lack of improvement is the degraded isolation efficiency between hadronic tau and jet candidates, due to the over-calibration of low-energy TTs, and represented by the ROC curve in Figure~\ref{fig:NN_Layer2}~(b).
+Various configurations were tested, including artificially saturating the Layer-1 calibration factors for low-energy towers to unity. However, this drastic change led to even worse performance, as the calibration no longer reflected the NN-learned patterns and predictions.
 
-\subsection{Calibration factors and performance} % 30/6 - night
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.45\linewidth]{Figures/L1TP/NN_Layer2_Taus.pdf}}
+    \hspace{1cm}
+    \subfloat[]{\includegraphics[width=0.45\linewidth]{Figures/L1TP/NN_Layer2_ROC.pdf}}
+    \caption{}
+    \label{fig:NN_Layer2}
+\end{figure}
+
+\bigbreak
+
+The study on hadronic tau leptons at Layer-2 highlighted the critical importance of a correct interface between Layer-1 and Layer-2, revealing how a better Layer-1 performance does not automatically translate into improved Layer-2 performance. The complex and delicate algorithms for the definition of the L1 candidates are extremely sensitive to changes in the Layer-1 calibration factors, and ad-hoc constraints on individual towers are required directly during the training procedure.
+In this context, the NN approach does not provide an ideal environment, given the non-trivial relationship between the network trainable parameters and the physical calibration factor values. 
+Moreover, the capability of NNs to interpolate the detector response in energy regions with no input makes the calibration factors less controllable.
+% OPTIONAL: example of extrapolation in Zero Suppression region
+% OPTIONAL: problem with the rate proxy definition
+% OPTIONAL: we use single tower inputs to extract SFs but they are never seen by the NN
+
+For the application of the ML-based calibration method to the Layer-1 context, the NN approach has revealed its limitations. After several attempts, it was decided to adopt a different algorithm for the Layer-1 calibration procedure, allowing for direct customisation of the individual calibration factors and better model interpretability: a proposed technique that facilitates these aspects is the use of JAX library.
+
+\section{The JAX approach} 
+
+In order to overcome the limitations of the NN approach in terms of model interpretability and customisation of the individual calibration factors, the NN algorithm has been substituted by a new differentiable programming approach based on JAX~\cite{}, a Python library designed for accelerator-oriented array computation and high-performance program transformation.
+In the new implementation, the trainable parameters are no longer encoded in the NN hidden layers, the calibration factors are explicitly defined as a matrix of weights to be applied to the TTs in input, and their values can be individually constrained during the training procedure.
+
+The basic technique for the model training and the extraction of Layer-1 calibration factors remains unchanged with respect to the NN approach: the input to the JAX algorithm is the raw energy deposit $E_T$ and $i\eta$ position of each TT composing the L1 candidate, and calibration factors are applied to each tower in order to obtain a calibrated L1 object energy as close as possible to the offline reference value, as already described in Equation~\ref{eq:Training}. 
+The main difference comes from a pre-definition of the trainable calibration factors as a fixed-size 2D matrix, where the two dimensions correspond to the $i\eta$ and energy of the TTs: unlike the NN approach, the JAX architecture requires a definition of the energy binning a priori, better simulating the discreteness of the Layer-1 firmware.
+Moreover, the calibration factors matrix can be initialised to unity before the training, and the calibration factors corresponding to regions which are not represented in the input datasets are simply not modified. This feature is a radical change with respect to the NN approach, where the algorithm was capable of uncontrollably interpolating the calibration factors.
+Finally, the individual calibration factors can be easily constrained to pre-defined values, for a better matching with the Layer-2 calibration, by simply masking the learning process of the corresponding matrix element. This procedure has been widely employed for this application, and allows for fine adjustments of specific values, without disrupting the overall calibration. 
+
+The JAX approach provides a simplified model compared to the NN technique, and its implementation does not allow for the extrapolation of non-linear relationships for the model interpolation. However, given the limited information available in the Layer-1 context and the constrained structure of the firmware, the potential non-linearity learnt by the NN model would be cancelled by the extraction of a single multiplication factor. Therefore, a linear interpolation is sufficient for this application, and better represents the Layer-1 firmware structure within the ML model.
+
+\subsection{The calibration matrix and training procedure}
+
+The JAX calibration algorithm is based on the initial definition of a trainable 2D calibration matrix, containing all the Layer-1 firmware compatible calibration factors. The $i\eta$ binning follows the detector geometry, defining 28 or 41 $i\eta$ positions for the ECAL and HCAL configurations respectively. The energy range is divided into different size bins, with a step of 2~$iE_T$ for energies below 50~GeV, a step of 10~$iE_T$ for energies between 25 and 100~GeV, and a single bin from 100~GeV to the saturation energy of 127.5~GeV. The same energy binning is adopted for the extraction of ECAL and HCAL calibration factors.
+
+The 2D calibration matrix ($CM$) can be mathematically expressed as:
+\begin{equation}
+    \textbf{CM} = \begin{bmatrix} 
+    SF_{i\eta_1,iE_1} & SF_{i\eta_1,iE_2} & \dots & SF_{i\eta_1,iE_N} \\
+    SF_{i\eta_2,iE_1} & & & \vdots \\
+    \vdots & & & \vdots \\
+    SF_{i\eta_M,iE_1} & \dots & \dots & SF_{i\eta_M,iE_N} \\
+    \end{bmatrix}
+\end{equation}
+where each $SF_{i\eta,iE}$ represents the calibration factor to be applied to the TT in position $i\eta$, with raw energy deposit corresponding to energy bin $iE$. The 2D calibration matrix has a fixed $M\times N$ dimension, where $N=40$ and $M=28~(41)$ for ECAL (HCAL).
+
+At the beginning of the training procedure, all the elements of the 2D calibration matrix are initialised to 1. Several configurations have been tested for the constrain of individual calibration factors, in order to better meet the Layer-2 requirements. 
+The final ECAL configuration includes the standard zero-suppression of the low-energy TTs in position $i\eta=26,27,28$, and a constraint of the calibration factors to 1 for the first two energy bins, corresponding to $iE_T<2$~GeV.
+This requirements contrasts the tendency of suppressing low-energy TTs, which are used at Layer-1 as pile-up estimator.
+The HCAL configuration includes the default zero-suppression in the region $i\eta<16$ for the first energy bin, corresponding to $iE_T=0.5$~GeV, and an additional zero-suppression of all HF towers with energy $iE_T<4$~GeV. While the former constraint is already implemented in the current Layer-1 configuration, the latter has been introduced to reduce the impact of the radiation damage in the HF detector.
+
+Once the calibration matrix has been defined, the training procedure is based on the progressive adjustment of its trainable values, through the minimisation of the loss function, defined to contain only the \textit{regression term}, defined as the MAPE function:
+\begin{equation}
+    L=\left|\frac{E_T^{L1,\;jet} - E_T^{Reco,\;jet}}{E_T^{Reco,\;jet}}\right|
+\end{equation}
+where $E_T^{\:L1,\;jet}$ and $E_T^{\:Reco,\;jet}$ are the energy of the calibrated L1 candidate and of the offline object respectively. 
+Compared to the loss function employed for the training of the NN approach, the regularisation term is no longer consider, since the JAX approach does not involve perceptron weights, typical of the NN architecture; the rate term is also removed, since the manual constraints applied to individual calibration factors already drive a rate reduction and, given the conflicting effect between the regression and the rate terms in the loss function, the absence of the rate term allows for a better convergence of the training.
+
+During the training procedure, the gradient of the loss is computed through the \textit{Jacobian} function available in the JAX library, which computes the derivative of the loss function with respect to each element of the calibration matrix:
+\begin{equation}
+    \textbf{J} = \frac{\partial L}{\partial \textbf{CM}} = \begin{bmatrix} 
+    \frac{\partial L}{\partial SF_{i\eta_1,iE_1}} & \frac{\partial L}{\partial SF_{i\eta_1,iE_2}} & \dots & \frac{\partial L}{\partial SF_{i\eta_1,iE_N}} \\
+    \frac{\partial L}{\partial SF_{i\eta_2,iE_1}} & & & \vdots \\
+    \vdots & & & \vdots \\
+    \frac{\partial L}{\partial SF_{i\eta_M,iE_1}} & \dots & \dots & \frac{\partial L}{\partial SF_{i\eta_M,iE_N}} \\
+    \end{bmatrix}
+\end{equation}
+
+\bigbreak
+
+At each epoch $i$, the values of the scale factors in the calibration matrix are modified in the opposite direction to the Jacobian, driving the loss function towards the minimum:
+\begin{equation}
+    \textbf{CM}~(\textnormal{Ep}_{i+1}) = \textbf{CM}~(\textnormal{Ep}_i) - \textbf{J} \times LR 
+\end{equation}
+where $LR$ is a multiplicative factor defining the learning rate.
+A special treatment is reserved for the constrained calibration factors, whose values are not modified during the training procedure, by applying a masking to the Jacobian matrix and setting the derivative to 0. This allows the initialised constrained values not to be modified during the training procedure.
+At the end of the training, the calibration matrix is saved into the LUT for the firmware re-emulation.
+
+\subsection{Calibration factors and Layer-1 performance} % 30/6 - night
+
+The Layer-1 calibration factors extracted through the JAX approach are reported in Figure~\ref{fig:JAX_SFs} for ECAL (a) and HCAL (b) TTs, as a function of the $i\eta$ position and of the recorded raw energy.
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_2D_ECAL_Thesis_JAX.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/SFs_2D_HCAL_Thesis_JAX.pdf}}
+    \caption{}
+    \label{fig:JAX_SFs}
+\end{figure}
+
+In the case of ECAL, the calibration factors are close to unity, the suppression of low-energy TTs in the barrel is cancelled by the constraint of the calibration factor values to 1. The discontinuity corresponding to $i\eta=18$, already observed in the current method and in the NN approach, is still present, confirming the capability of the JAX method to interpolate same pattern even with a simpler architecture. An important difference is noticeable with respect to the NN approach in the region $i\eta=26,27,28$: in the JAX method, the discreteness of the model ensures independence between calibration factors, so that the zero-suppression does not influence higher energies.
+
+In the case of HCAL, the calibration factors still show values larger than 1, with an increase towards lower-energy towers. However, the possibility of constraining the calibration factors in the zero-suppression regions, allows the model to adapt the adjacent values accordingly. The pattern around the region $i\eta=16$ is still present, due to the reduced depth in HCAL crystals in the transition area between barrel and endcap. In addition, a new region is enhanced around position $i\eta=28$, corresponding to the transition between HCAL and HF. The difference with respect to the NN approach in this area is probably due to the fact that the NN has been trained for HCAL and HF separately, to allow for a better convergence of the model, while in the JAX training the two regions are trained simultaneously and allow for a better corrections in the transition area.
+In the HF, the zero-suppression of low energy TTs is visible in the first four energy bins: this constraint has been required by the Layer-2 jet group, to reduce the low-energy pile-up activity. However, the training tends to compensate for the suppression of low-energy towers by enhancing the calibration factors for medium-energy towers in the region around $i\eta=35$.
+
+\bigbreak
+
+The performance of the new Layer-1 calibration factors derived through the JAX method is evaluated by replicating the Layer-1 firmware with the new LUT, following the same strategy used for the NN approach. A dataset collected by the CMS experiment during Run III data taking is re-emulated under three different Layer-1 configurations: one in which no calibration is applied (No calibration), one in which the calibration factors are set to the values obtained with the old method (Old calibration), and one in which the calibration constants are derived with the JAX approach presented in this section (New calibration). 
+The three configurations are compared in terms of Layer-1 energy response, scale and resolution, and of efficiency turn-on sharpness for fixed L1 rate thresholds. The corresponding Layer-1 performance are presented in Figure~\ref{fig:JAX_ECAL_Response} and \ref{fig:JAX_ECAL_TurnOn} for ECAL, and in Figure~\ref{fig:JAX_HCAL_Response}, \ref{fig:JAX_HCAL_TurnOn_Er2p5} and \ref{fig:JAX_HCAL_TurnOn} for HCAL and HF.
 
 \begin{figure}
     \centering
@@ -552,7 +645,7 @@ The performance presented for the NN approach are the result of a careful optimi
     \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/rate_ObjEr2p5__ele.pdf}}
     
     \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/NN_Performance/turnon_fixedObjRateEr2p5_12__ele.pdf}}
-    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/turnon_fixedObjRateEr2p5_40__jet.pdf}}
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Performance/turnon_fixedObjRateEr2p5_36__ele.pdf}}
     \caption{}
     \label{fig:JAX_ECAL_TurnOn}
 \end{figure}
@@ -587,6 +680,14 @@ The performance presented for the NN approach are the result of a careful optimi
     \label{fig:JAX_HCAL_TurnOn_Er2p5}
 \end{figure}
 
+\subsection{The Layer-2 validation} % 1/7
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Layer2_Taus.pdf}}
+    \label{fig:JAX_Layer2_Taus}
+\end{figure}
+
 \section{Future applications} % 1/7
 
-\section*{Summary} % 1/7 + introduction and revision
+\section*{Summary} % 2/7 + introduction and revision
