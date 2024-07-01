@@ -524,7 +524,7 @@ The performance presented for the NN approach are the result of a careful optimi
 
 Once the new calibration factors have been extracted, and their performance has been evaluated at Layer-1 and compared to the previous method, the final validation of the Layer-1 configuration must be conducted on Layer-2 objects. 
 As detailed in Section~\ref{subsec:The Layer-2 calorimeter objects}, the definition of Layer-2 trigger candidates is performed differently for electrons, hadronic tau leptons, jets, and energy sums, and given the stacked architecture of Layer-1 and Layer-2, changes in the Layer-1 configuration necessitate a re-optimisation of the Layer-2 calibration method. 
-In the L1 Trigger community, the Layer-2 objects calibration is performed by dedicated groups and involves the expertise of several specialists; therefore, the new Layer-1 configuration has been preliminarily studied at Layer-2 on hadronic tau leptons, whose calibration is based on a complex procedure and provides a comprehensive validation for both ECAL and HCAL components.
+In the L1 Trigger community, the Layer-2 objects calibration is performed by dedicated groups and involves the expertise of several specialists; therefore, the new Layer-1 configuration has been preliminarily studied at Layer-2 only for hadronic tau leptons, whose calibration is based on a complex procedure and provides a comprehensive validation for both ECAL and HCAL components.
 
 The results of the Layer-2 performance for the new Layer-1 calibration factors obtained through the NN approach are presented in Figure~\ref{fig:NN_Layer2}~(a), in terms of efficiency turn-on curves, for the current (red) and the new (blue) Layer-1 and Layer-2 calibration. The combination of the new NN-based Layer-1 calibration and the Layer-2 re-optimisation results in a less sharp efficiency turn-on curve compared to the current configuration. 
 This indicates that the improvement observed at Layer-1 does not directly translate into better Layer-2 performance. The primary reason for this lack of improvement is the degraded isolation efficiency between hadronic tau and jet candidates, due to the over-calibration of low-energy TTs, and represented by the ROC curve in Figure~\ref{fig:NN_Layer2}~(b).
@@ -700,14 +700,38 @@ The higher calibration factors cause a slight rate increase, nevertheless the be
 
 \subsection{The Layer-2 validation} 
 
-The JAX approach bla bla bla
-
 \begin{figure}
     \centering
-    \subfloat[]{\includegraphics[width=0.5\linewidth]{Figures/L1TP/JAX_Layer2_Taus.pdf}}
+    \subfloat[]{\includegraphics[width=0.4\linewidth]{Figures/L1TP/JAX_Layer2_Tau_NoIso.pdf}}
+    \subfloat[]{\includegraphics[width=0.4\linewidth]{Figures/L1TP/JAX_Layer2_Tau_Iso.pdf}}
+    \caption{Layer-2 performance of the new JAX-based Layer-1 calibration on hadronic tau leptons, compared to the current calibration, in terms of efficiency turn-on curve before (a) and after (b) applying the isolation requirement. The Layer-2 calibration procedure is re-optimised to account for the different Layer-1 calibration factors. The new JAX-based Layer-1 calibration provides better results in the non-isolated case, and comparable results in the isolated case, with respect to the current configuration.}
     \label{fig:JAX_Layer2_Taus}
 \end{figure}
 
-\section{Future applications} % 1/7
+The real validation of the new JAX method for the extraction of the Layer-1 calibration factors is conducted on Layer-2 objects, after the re-optimisation of the Layer-2 calibration process based on the new Layer-1 configuration. 
+The newly derived JAX-based calibration, including the required constraints for a better interface between Layer-1 and Layer-2, have been validated on Layer-2 hadronic tau leptons and $e/\gamma$. 
+
+The Layer-2 performance of the new JAX-based Layer-1 calibration on hadronic tau leptons, compared to the current calibration, in terms of efficiency turn-on curve is presented in Figure~\ref{fig:JAX_Layer2_Taus}. The new calibration, in blue, provides better performance when the isolation requirement on hadronic tau candidates is not applied, and a comparable L1 efficiency after applying the isolation. 
+The Layer-2 efficiency turn-on curves for the validation of the JAX method on $e/\gamma$ candidates is reported in Figure~\ref{fig:JAX_Layer2_EGs}, for the loose and tight isolation requirements. 
+Also in this case, the new JAX-based Layer-1 calibration provides comparable results with respect to the current configuration.
+The validation of the new JAX method on Layer-2 jet candidates is not yet available, but it is expected to provide positive outcomes, given the more basic structure of jet objects compared to the previous cases, and its straight compatibility with the $9\times9$ geometry adopted by the method.
+
+\bigbreak
+
+The JAX method marks a significant improvement over the NN-based calibration, which resulted in degraded Layer-2 performance.
+The implementation of a new ML-based method for the detector calibration represents a significant advancement with respect to the previous technique, based on the fit of the simulated energy response in MC samples. This new ML-based approach furnishes more efficient and streamlined calibration, maintaining comparable Layer-1 performance while simplifying the overall procedure.
+It paves the way for an automated system that can continuously acquire data, train models, validate results, and extract calibrations, which would be highly advantageous for the ongoing operations of the CMS experiment.
+
+Further refinements of the JAX method are expected to enhance the compatibility between Layer-1 and Layer-2, ultimately leading to more accurate and reliable performance of the CMS Level-1 Trigger system. This advancement underscores the potential for significant improvements in detector calibration and the overall success of future experimental efforts.
+
+\begin{figure}
+    \centering
+    \subfloat[]{\includegraphics[width=0.4\linewidth]{Figures/L1TP/JAX_Layer2_EG_LooseIso.pdf}}
+    \subfloat[]{\includegraphics[width=0.4\linewidth]{Figures/L1TP/JAX_Layer2_EG_TightIso.pdf}}
+    \caption{Layer-2 performance of the new JAX-based Layer-1 calibration on $e/\gamma$, compared to the current calibration, in terms of efficiency turn-on for loose (a) and tight (b) isolation requirement. The Layer-2 calibration procedure is re-optimised to account for the different Layer-1 calibration factors. In both configurations, the new JAX-based Layer-1 calibration provides comparable results with respect to the current configuration.}
+    \label{fig:JAX_Layer2_EGs}
+\end{figure}
+
+\section{Future applications} % 2/7
 
 \section*{Summary} % 2/7 + introduction and revision
